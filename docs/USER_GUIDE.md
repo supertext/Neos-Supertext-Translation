@@ -115,3 +115,7 @@ Administrators can do the same on the command line (`./flow supertext:export`, `
 
 - Translate a page at once with *Create and copy* rather than element by element: it's one request to Supertext, and the context makes the translation more consistent.
 - Start at the top: translate the home page first, then its subpages. Each page then only creates itself in the new language.
+
+## Support
+
+Questions, problems or ideas: use the [Supertext support form](https://integrations.supertext.com/en/support?platform=neos). Mention the version of Neos and of the plugin, what you did and what you expected; an error message helps a lot. You get an answer by email, in your language.
