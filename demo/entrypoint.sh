@@ -38,6 +38,21 @@ done
 ./flow doctrine:migrate --quiet
 ./flow cr:setup
 
+# Neos 9.2 changed the content graph's tables. A database from 9.0/9.1 keeps the old
+# rows, cr:setup can't migrate them, and every page fails with 'The workspace "live"
+# does not exist'. Once per volume: clean up the events and replay the graph
+# (the demo is small, this takes seconds). New installs only set the marker.
+CR_MARK="$DATA/.contentgraph-9.2"
+if [ ! -e "$CR_MARK" ]; then
+  if ./flow site:list | grep -q neosdemo; then
+    echo "Upgrading the content graph to Neos 9.2 (one-time replay)..."
+    ./flow crupgrade:eventsdeduplicatebaseworkspacechanges --force
+    ./flow crupgrade:resetupandreplaycontentgraph --force
+    ./flow cr:setup
+  fi
+  touch "$CR_MARK"
+fi
+
 if ! ./flow site:list | grep -q neosdemo; then
   echo "First boot: importing Neos.Demo..."
   ./flow site:importall --package-key Neos.Demo

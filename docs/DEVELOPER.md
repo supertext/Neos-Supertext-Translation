@@ -203,7 +203,7 @@ The public demo is a container built from `demo/Dockerfile`: Neos 9.2 with the o
 | `composer.json`, `composer.lock` | The demo project (Neos, Neos.Demo, both Supertext packages via a path repository). Keeps Flow's installer scripts — without them there is no `./flow` and no `Web/index.php`. |
 | `DistributionPackages/Supertext.NeosDemo` | Demo site package: French/Italian dimension values and URL segments, `en_UK` → `en-GB` in Settings.yaml (shows the override; `en_US` needs none), trusted proxies, the root-node migration, `demo:ensureaccounts` and `demo:ensurelanguages` (chooses `de-CH`/`fr-CH`/`it-CH`, formal, under Administration → Supertext while nothing is chosen there yet) |
 | `Settings.yaml` | Database connection from `DB_*`; `subRequestPhpIniPathAndFilename: false` (the PHP image has no php.ini, and Flow 9.2 refuses sub-requests without one) |
-| `entrypoint.sh` | Keeps only Apache's prefork MPM, links `Data/Persistent` to the volume, waits for the database, runs `doctrine:migrate` + `cr:setup`; on first boot imports Neos.Demo and runs the root-node migration; every boot: `demo:ensureaccounts`, `resource:publish`, `flow:cache:warmup` |
+| `entrypoint.sh` | Keeps only Apache's prefork MPM, links `Data/Persistent` to the volume, waits for the database, runs `doctrine:migrate` + `cr:setup`; once per volume, on a database from Neos 9.0/9.1, the 9.2 content-graph upgrade (`crupgrade:eventsdeduplicatebaseworkspacechanges` and `crupgrade:resetupandreplaycontentgraph`, marker `/data/.contentgraph-9.2`); on first boot imports Neos.Demo and runs the root-node migration; every boot: `demo:ensureaccounts`, `resource:publish`, `flow:cache:warmup` |
 | `apache.conf`, `php.ini` | Web server and PHP settings |
 | `.env.example` | All variables |
 

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Fixed: the demo showed a server error on every page after the update to Neos 9.2 ("The workspace live does not exist"): its start script now runs Neos 9.2's one-time content-graph upgrade on an existing database.
 - Added: the Supertext support form is linked in the README, the user guide and GitHub's "New issue" page.
 - Tested on Neos 9.2 (PHP 8.4) next to 9.1. Demo: Neos 9.1.10 → 9.2.0 (Flow 9.2.2, Neos UI and Neos.Demo 9.2.0) on PHP 8.4; the CI *PHPStan* job now runs on PHP 8.4 against it.
 - Added: PHP 8.5 in the CI test matrix (the package already allows PHP 8.2 and newer). Demo: Neos SEO 4.3.0 and current Guzzle/Symfony patch releases.
