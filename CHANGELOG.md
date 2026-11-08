@@ -3,6 +3,8 @@
 ## Unreleased
 
 - Fixed: the demo showed a server error on every page after the update to Neos 9.2 ("The workspace live does not exist"): its start script now runs Neos 9.2's one-time content-graph upgrade on an existing database.
+- Fixed: the back-end menu (Neos UI) showed the label ids `Supertext.NeosTranslation:Main:…` instead of *Supertext* for the two Supertext modules; the package now adds its `Main.xlf` to the UI's translations (`Neos.Neos.userInterface.translation.autoInclude`).
+- Docs: demo movie in the README (`docs/images/demo.gif`): an editor creates the German version of an English page with *Create and copy* and checks it. Recorded by `Tests/Docs/movie.mjs` (`npm run movie`) against the demo and the stand-in API (now with German samples, `Tests/Docs/sample-de.json`); the MP4 version has an English voice (Piper voice “alba”, CC BY 4.0). Install and configuration movie (MP4, not committed): `Tests/Docs/movie-install.mjs` (`npm run movie:install`).
 - Added: the Supertext support form is linked in the README, the user guide and GitHub's "New issue" page.
 - Tested on Neos 9.2 (PHP 8.4) next to 9.1. Demo: Neos 9.1.10 → 9.2.0 (Flow 9.2.2, Neos UI and Neos.Demo 9.2.0) on PHP 8.4; the CI *PHPStan* job now runs on PHP 8.4 against it.
 - Added: PHP 8.5 in the CI test matrix (the package already allows PHP 8.2 and newer). Demo: Neos SEO 4.3.0 and current Guzzle/Symfony patch releases.

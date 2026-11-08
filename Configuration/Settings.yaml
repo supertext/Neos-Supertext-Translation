@@ -77,6 +77,13 @@ Supertext:
 
 Neos:
   Neos:
+    # The back-end menu (Neos UI) shows the modules' labels from xliff.json: include the
+    # package's Main.xlf there, or the menu shows the label ids instead of "Supertext".
+    userInterface:
+      translation:
+        autoInclude:
+          Supertext.NeosTranslation:
+            - Main
     modules:
       management:
         submodules:

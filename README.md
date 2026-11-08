@@ -4,6 +4,8 @@ Translates pages and content with **Supertext AI** the moment an editor creates 
 
 Works with Neos 9.0+ (tested on 9.1 and 9.2), PHP 8.2+.
 
+![Demo: an editor opens the English page “Text & images” in Neos, switches the language menu to Deutsch, chooses Create and copy and gets the page translated into German by Supertext](docs/images/demo.gif)
+
 ![The Neos backend showing a page translated into Italian by Supertext](docs/images/translated-page.png)
 
 ## How it works
