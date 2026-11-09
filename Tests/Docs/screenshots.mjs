@@ -131,7 +131,8 @@ await page.frameLocator('iframe[name=neos-content-main]').getByRole('heading', {
 await page.waitForTimeout(2500);
 await shot(page, 'translated-page');
 
-const publish = page.getByRole('button', { name: /Publish to/ }).first();
+// Neos 9.2's publish button reads "Publish" (earlier versions "Publish to …"): its id is stable.
+const publish = page.locator('#neos-PublishDropDown-Publish');
 await shot(page, 'publish-button', pad(await publish.boundingBox(), 6));
 await publish.click();
 // The first page in a new language also created its parent pages there, so Neos asks
