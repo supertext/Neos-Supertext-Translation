@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 1.0.0 — 2026-11-10
+
+First stable release. Every plugin release is now tested end to end against the live Supertext API (`.github/workflows/e2e.yml`).
+
 - Fixed: the demo showed a server error on every page after the update to Neos 9.2 ("The workspace live does not exist"): its start script now runs Neos 9.2's one-time content-graph upgrade on an existing database.
 - Fixed: the back-end menu (Neos UI) showed the label ids `Supertext.NeosTranslation:Main:…` instead of *Supertext* for the two Supertext modules; the package now adds its `Main.xlf` to the UI's translations (`Neos.Neos.userInterface.translation.autoInclude`).
 - Docs: demo movie in the README (`docs/images/demo.gif`): an editor creates the German version of an English page with *Create and copy* and checks it. Recorded by `Tests/Docs/movie.mjs` (`npm run movie`) against the demo and the stand-in API (now with German samples, `Tests/Docs/sample-de.json`); the MP4 version has an English voice (Piper voice “alba”, CC BY 4.0). Install and configuration movie (MP4, not committed): `Tests/Docs/movie-install.mjs` (`npm run movie:install`).
