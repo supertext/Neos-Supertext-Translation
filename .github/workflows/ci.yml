@@ -49,7 +49,7 @@ jobs:
         with:
           php-version: '8.4'
           extensions: intl, gd, zip, exif, pdo_mysql
-          tools: phpstan:2.1
+          tools: phpstan:2.3
           coverage: none
       # Neos in the versions the demo locks. The package itself only needs its
       # composer.json there: PHPStan reads Classes/ from the repo root.

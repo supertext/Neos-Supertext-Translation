@@ -5,6 +5,11 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+    ignore:
+      # Guzzle 8 needs guzzlehttp/psr7 3; Neos/Flow (neos/http-factories, up to Neos 9.2)
+      # require psr7 1 or 2, so Guzzle 8 can't be installed next to Neos.
+      - dependency-name: "guzzlehttp/guzzle"
+        versions: [">=8"]
     groups:
       minor-and-patch:
         update-types: ["minor", "patch"]
