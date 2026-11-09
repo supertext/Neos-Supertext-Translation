@@ -69,25 +69,37 @@ async function dspHash(value) {
 async function contentStream(workspace) {
 	return (await q(`SELECT currentContentStreamId AS cs FROM ${T.ws} WHERE name = ?`, [workspace]))[0]?.cs;
 }
+/**
+ * Hierarchy rows visible in a content stream. Neos 9.0/9.1 keep one set of rows per content stream
+ * (`contentstreamid`). Neos 9.2 keeps them in *layers* (`cr_default_p_graph_contentstreamlayer`): a
+ * content stream sees its layers, and per relation (`id`) the row of the highest layer wins (Neos's own
+ * HierarchyRelationSubquery). `where` filters the winning rows (alias `h`).
+ */
+let layered;
+async function visible(cs, where, params) {
+	layered ??= (await q(`SHOW COLUMNS FROM ${T.h} LIKE 'contentstreamlayer'`)).length > 0;
+	if (!layered) return { sql: `h.contentstreamid = ? AND ${where}`, params: [cs, ...params] };
+	const layers = (await q(`SELECT contentStreamLayer AS l FROM cr_default_p_graph_contentstreamlayer WHERE contentStreamId = ?`, [cs])).map((r) => r.l);
+	if (!layers.length) throw new Error(`No content stream layers for ${cs}`);
+	return {
+		sql: `h.contentstreamlayer IN (?) AND ${where}
+		 AND NOT EXISTS (SELECT 1 FROM ${T.h} hw WHERE hw.id = h.id AND hw.contentstreamlayer IN (?) AND hw.contentstreamlayer > h.contentstreamlayer)`,
+		params: [layers, ...params, layers],
+	};
+}
 /** Nodes visible in a content stream and dimension space point, by aggregate id. */
 async function nodesIn(cs, hash, aggregateIds = null) {
 	if (!hash || (aggregateIds && !aggregateIds.length)) return [];
-	return q(
-		`SELECT n.*, h.subtreetags, h.parentnodeanchor FROM ${T.h} h JOIN ${T.node} n ON n.relationanchorpoint = h.childnodeanchor
-		 WHERE h.contentstreamid = ? AND h.dimensionspacepointhash = ?${aggregateIds ? ' AND n.nodeaggregateid IN (?)' : ''}`,
-		aggregateIds ? [cs, hash, aggregateIds] : [cs, hash],
-	);
+	const v = await visible(cs, `h.dimensionspacepointhash = ?${aggregateIds ? ' AND n.nodeaggregateid IN (?)' : ''}`, aggregateIds ? [hash, aggregateIds] : [hash]);
+	return q(`SELECT n.*, h.subtreetags, h.parentnodeanchor FROM ${T.h} h JOIN ${T.node} n ON n.relationanchorpoint = h.childnodeanchor WHERE ${v.sql}`, v.params);
 }
 /** Content below a document (not its child documents), all levels. */
 async function contentBelow(cs, hash, documentAnchor) {
 	const out = [];
 	let level = [documentAnchor];
 	while (level.length) {
-		const rows = await q(
-			`SELECT n.*, h.subtreetags FROM ${T.h} h JOIN ${T.node} n ON n.relationanchorpoint = h.childnodeanchor
-			 WHERE h.contentstreamid = ? AND h.dimensionspacepointhash = ? AND h.parentnodeanchor IN (?)`,
-			[cs, hash, level],
-		);
+		const v = await visible(cs, 'h.dimensionspacepointhash = ? AND h.parentnodeanchor IN (?)', [hash, level]);
+		const rows = await q(`SELECT n.*, h.subtreetags FROM ${T.h} h JOIN ${T.node} n ON n.relationanchorpoint = h.childnodeanchor WHERE ${v.sql}`, v.params);
 		const content = rows.filter((n) => !isDocument(n));
 		out.push(...content);
 		level = content.map((n) => n.relationanchorpoint);
