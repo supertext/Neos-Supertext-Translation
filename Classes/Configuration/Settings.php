@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Supertext\NeosTranslation\Configuration;
 
 use Neos\Flow\Annotations as Flow;
+use Supertext\NeosTranslation\Api\SupertextClientFactory;
+use Supertext\NeosTranslation\Service\LanguageMapping;
 
 /**
  * Typed access to Supertext.NeosTranslation settings; environment variables win.
@@ -42,6 +44,20 @@ class Settings
         return rtrim($url, '/') . '/';
     }
 
+    /**
+     * Supertext's review service for languages with *Translation review* on: `reviewUrl`
+     * (default SupertextClientFactory::REVIEW_URL), SUPERTEXT_REVIEW_URL wins when set and not
+     * empty. '' (setting `reviewUrl: ''`) turns review off for every language.
+     */
+    public function getReviewUrl(): string
+    {
+        $fromEnv = getenv('SUPERTEXT_REVIEW_URL');
+        $url = is_string($fromEnv) && trim($fromEnv) !== ''
+            ? trim($fromEnv)
+            : trim((string)($this->settings['reviewUrl'] ?? SupertextClientFactory::REVIEW_URL));
+        return $url === '' ? '' : rtrim($url, '/') . '/';
+    }
+
     public function getPollInterval(): int
     {
         return max(1, (int)($this->settings['pollInterval'] ?? 2));
@@ -57,7 +73,7 @@ class Settings
         return (string)($this->settings['languageDimension'] ?? 'language') ?: 'language';
     }
 
-    /** @return array{code?: string, politeness?: string, enabled?: bool} */
+    /** @return array{code?: string, politeness?: string, enabled?: bool, review?: bool} */
     public function getLanguage(string $dimensionValue): array
     {
         $languages = $this->settings['languages'] ?? [];
@@ -65,31 +81,22 @@ class Settings
         return is_array($config) ? $config : [];
     }
 
+    /** The `languages` setting as it is (per dimension value: code, politeness, enabled). */
+    public function getLanguages(): mixed
+    {
+        return $this->settings['languages'] ?? [];
+    }
+
     /**
-     * The language mapping: dimension value => Supertext code, from the `code` of each
-     * `languages` entry (blank codes left out). Used for targets and sources alike.
+     * The codes set in Settings.yaml (`languages.<value>.code`, blank ones left out). They
+     * override what is chosen under Administration → Supertext; the mapping in use is
+     * LanguageResolver::mapping().
      *
      * @return array<string, string>
      */
     public function getLanguageMapping(): array
     {
-        return self::mappingFrom($this->settings['languages'] ?? []);
-    }
-
-    /**
-     * @param mixed $languages the `languages` setting
-     * @return array<string, string>
-     */
-    public static function mappingFrom(mixed $languages): array
-    {
-        $mapping = [];
-        foreach (is_array($languages) ? $languages : [] as $dimensionValue => $config) {
-            $code = is_array($config) ? trim((string)($config['code'] ?? '')) : '';
-            if ($code !== '') {
-                $mapping[(string)$dimensionValue] = $code;
-            }
-        }
-        return $mapping;
+        return LanguageMapping::overrides($this->settings['languages'] ?? []);
     }
 
     /** The "Send version information to Supertext" setting; null when not set (default on). */

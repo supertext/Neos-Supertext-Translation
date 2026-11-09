@@ -10,9 +10,12 @@
  *   CHROMIUM_PATH                             optional Chromium binary
  *
  * The demo must not have Italian content yet (fresh database), because the flow
- * creates "Text & images" in Italian.
+ * creates "Text & images" in Italian. ONLY=files takes just the Management → Supertext
+ * screenshots (export, import result), ONLY=languages just Administration → Supertext; both
+ * work on any state of the demo.
  */
 import { chromium } from 'playwright';
+import { readFileSync } from 'node:fs';
 
 const B = process.env.BASE_URL || 'http://127.0.0.1:8097';
 const EDITOR = [process.env.DEMO_EDITOR_EMAIL || 'editor@example.com', process.env.DEMO_EDITOR_PASSWORD || 'Docs12345!'];
@@ -38,6 +41,69 @@ async function login([user, password]) {
   return page;
 }
 const shot = (page, name, clip) => page.screenshot({ path: `${OUT}/${name}.png`, ...(clip ? { clip } : {}) });
+
+// --- User guide: Management → Supertext (editor) ----------------------------
+// Export "Text & images" for Italian, fill in the Italian from sample-it.json (the same
+// samples the stand-in translates with) and import the file again.
+async function translationFiles(page) {
+  const norm = (s) => s.replace(/&apos;|&#39;/g, "'").replace(/&nbsp;/g, ' ').replace(/<br\s*\/?>/g, '<br>').replace(/\s+/g, ' ').trim();
+  const samples = new Map(Object.entries(JSON.parse(readFileSync(new URL('sample-it.json', import.meta.url)))).map(([en, it]) => [norm(en), it]));
+  const escape = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const unescape = (s) => s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&amp;/g, '&');
+
+  await page.goto(`${B}/neos/management/supertext`);
+  await page.locator('.supertext-files').waitFor();
+  await page.waitForTimeout(300);
+  {
+    const box = await page.locator('.supertext-files').boundingBox();
+    await shot(page, 'module-overview', { x: 0, y: 0, width: 1400, height: Math.min(900, Math.ceil(box.y + box.height + 16)) });
+  }
+  const pageValue = await page.locator('#supertext-node option', { hasText: PAGE }).first().getAttribute('value');
+  await page.selectOption('#supertext-node', pageValue);
+  await page.click(`label.neos-checkbox:has-text("Italiano")`);
+  await page.click('label[for=supertext-format-html]');
+  await page.waitForTimeout(300);
+  await shot(page, 'module-export', pad(await page.locator('.supertext-files-export').boundingBox(), 12));
+
+  const [download] = await Promise.all([page.waitForEvent('download'), page.click('#supertext-export input[type=submit]')]);
+  const exported = readFileSync(await download.path(), 'utf8');
+  // Plain-text segments are escaped in the file; HTML segments are as they are.
+  const translated = exported.replace(/(<div data-st-id="\d+">)([\s\S]*?)(<\/div>\n)/g, (all, open, text, close) => {
+    const plain = !/<[a-z]/i.test(text);
+    const hit = samples.get(norm(plain ? unescape(text) : text));
+    return hit === undefined ? all : open + (plain ? escape(hit) : hit) + close;
+  });
+
+  await page.goto(`${B}/neos/management/supertext`);
+  await page.setInputFiles('#supertext-file', { name: download.suggestedFilename(), mimeType: 'text/html', buffer: Buffer.from(translated) });
+  await page.click('#supertext-import input[type=submit]');
+  await page.locator('.supertext-files-result').waitFor({ timeout: 60000 });
+  await page.waitForTimeout(300);
+  await shot(page, 'module-import-result', pad(await page.locator('.supertext-files-result').boundingBox(), 12));
+}
+
+// --- Installation guide: Administration → Supertext (admin) -----------------
+// The language mapping as the demo sets it up: de/fr/it chosen (formal), en_UK from
+// Settings.yaml (read-only), en_US preselected as Supertext's suggestion.
+async function languages(admin) {
+  await admin.goto(`${B}/neos/administration/supertext`);
+  await admin.locator('#supertext-mapping').waitFor();
+  await admin.waitForTimeout(300);
+  await shot(admin, 'module-languages', pad(await admin.locator('.supertext-mapping').boundingBox(), 12));
+}
+
+if (process.env.ONLY === 'files') {
+  await translationFiles(await login(EDITOR));
+  await browser.close();
+  console.log(`Screenshots written to ${OUT}`);
+  process.exit(0);
+}
+if (process.env.ONLY === 'languages') {
+  await languages(await login(ADMIN));
+  await browser.close();
+  console.log(`Screenshots written to ${OUT}`);
+  process.exit(0);
+}
 
 // --- User guide (editor) ----------------------------------------------------
 const page = await login(EDITOR);
@@ -98,6 +164,8 @@ await site.goto(href ? new URL(href, B).toString() : `${B}/it`);
 await site.waitForTimeout(1500);
 await shot(site, 'website-italian', { x: 0, y: 0, width: 1400, height: 760 });
 
+await translationFiles(page);
+
 // --- Installation guide (admin) ---------------------------------------------
 const admin = await login(ADMIN);
 // Administration > Configuration > Settings, expanded down to the given settings path.
@@ -120,7 +188,8 @@ async function configuration(path, name, expand = []) {
   const box = await node.boundingBox();
   await shot(admin, name, pad({ x: box.x, y: box.y, width: Math.min(1000, box.width), height: Math.min(700, box.height) }, 12));
 }
-await configuration('Supertext.NeosTranslation', 'configuration-supertext', ['languages', 'languages.de', 'languages.fr', 'languages.it']);
+await languages(admin);
+await configuration('Supertext.NeosTranslation', 'configuration-supertext', ['languages', 'languages.en_UK']);
 await configuration('Neos.ContentRepositoryRegistry.contentRepositories.default.contentDimensions.language.values', 'configuration-languages', ['fr', 'it']);
 
 await browser.close();

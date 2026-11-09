@@ -4,17 +4,10 @@ declare(strict_types=1);
 
 namespace Supertext\NeosTranslation\Service;
 
-use Neos\ContentRepository\Core\ContentRepository;
 use Neos\ContentRepository\Core\Dimension\ContentDimensionId;
-use Neos\ContentRepository\Core\Feature\NodeModification\Command\SetNodeProperties;
-use Neos\ContentRepository\Core\Feature\NodeModification\Dto\PropertyValuesToWrite;
-use Neos\ContentRepository\Core\Projection\ContentGraph\ContentSubgraphInterface;
-use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
 use Neos\ContentRepository\Core\Projection\ContentGraph\VisibilityConstraints;
 use Neos\ContentRepositoryRegistry\ContentRepositoryRegistry;
 use Neos\Flow\Annotations as Flow;
-use Neos\Neos\Domain\Service\NodeTypeNameFactory;
-use Neos\Neos\Utility\NodeUriPathSegmentGenerator;
 use Psr\Log\LoggerInterface;
 use Supertext\NeosTranslation\Api\SupertextClientFactory;
 use Supertext\NeosTranslation\Configuration\Settings;
@@ -42,13 +35,13 @@ class NodeTranslator
     protected SupertextClientFactory $clientFactory;
 
     #[Flow\Inject]
-    protected PropertySelector $propertySelector;
+    protected SegmentCollector $segmentCollector;
+
+    #[Flow\Inject]
+    protected TranslationWriter $translationWriter;
 
     #[Flow\Inject]
     protected LanguageResolver $languageResolver;
-
-    #[Flow\Inject]
-    protected NodeUriPathSegmentGenerator $uriPathSegmentGenerator;
 
     #[Flow\Inject]
     protected Settings $settings;
@@ -102,64 +95,41 @@ class NodeTranslator
             foreach ($items as $item) {
                 $node = $sourceSubgraph->findNodeById($item->nodeAggregateId);
                 if ($node !== null) {
-                    $this->collect($contentRepository, $sourceSubgraph, $node, $nodes);
+                    $this->segmentCollector->collect($contentRepository, $sourceSubgraph, $node, $nodes);
                 }
             }
 
-            $segments = [];
-            $map = [];
-            foreach ($nodes as $nodeId => [$node, $properties]) {
-                foreach ($properties as $property => $isHtml) {
-                    $value = $node->getProperty($property);
-                    if (!is_string($value) || trim(strip_tags($value)) === '') {
-                        continue;
-                    }
-                    $map[] = [$nodeId, $property];
-                    $segments[] = new Segment($value, $isHtml);
-                }
-            }
-            if ($segments === []) {
+            $fields = $this->segmentCollector->segments($nodes);
+            if ($fields === []) {
                 return $result;
             }
+            $keys = array_keys($fields);
+            $segments = array_map(static fn (array $field): Segment => new Segment($field[0], $field[1]), array_values($fields));
 
             // Language codes first: an unmapped language stops here, before anything is sent.
             $targetCode = $this->languageResolver->targetCode($targetLanguage);
             $sourceCode = $this->languageResolver->sourceCode($sourceLanguage);
-            // One document per batch; the SDK splits only above ~900k characters.
-            $translated = $this->clientFactory->create()->translateTexts(
+            // One document per batch; the SDK splits only above ~900k characters. Languages with
+            // Translation review go through Supertext's review service (same API, same key).
+            $translated = $this->clientFactory->create($this->languageResolver->review($targetLanguage))->translateTexts(
                 $segments,
                 $targetCode,
                 $sourceCode,
                 $this->languageResolver->politeness($targetLanguage),
             );
 
-            $values = [];
-            foreach ($map as $index => [$nodeId, $property]) {
+            $translations = [];
+            foreach ($keys as $index => $key) {
                 if (isset($translated[$index]) && trim($translated[$index]) !== '') {
-                    $values[$nodeId][$property] = $translated[$index];
+                    $translations[$key] = $translated[$index];
                 }
             }
 
             $targetSubgraph = $contentRepository->getContentGraph($first->workspaceName)
                 ->getSubgraph($first->targetOrigin->toDimensionSpacePoint(), VisibilityConstraints::withoutRestrictions());
-            foreach ($values as $nodeId => $properties) {
-                $node = $nodes[$nodeId][0];
-                $targetNode = $targetSubgraph->findNodeById($node->aggregateId);
-                if ($targetNode === null) {
-                    continue; // variant was removed again meanwhile
-                }
-                if (isset($properties['title']) && $this->isDocument($contentRepository, $node) && $node->hasProperty('uriPathSegment')) {
-                    $properties['uriPathSegment'] = $this->uriPathSegmentGenerator->generateUriPathSegment($targetNode, strip_tags($properties['title']));
-                }
-                $contentRepository->handle(SetNodeProperties::create(
-                    $first->workspaceName,
-                    $node->aggregateId,
-                    $targetNode->originDimensionSpacePoint,
-                    PropertyValuesToWrite::fromArray($properties),
-                ));
-                $result->nodes++;
-                $result->fields += count($properties);
-            }
+            $written = $this->translationWriter->write($contentRepository, $first->workspaceName, $targetSubgraph, $nodes, SegmentCollector::group($translations));
+            $result->nodes += $written['nodes'];
+            $result->fields += $written['fields'];
         } catch (\Throwable $e) {
             $result->error = ErrorMessages::forException($e, $targetLanguage);
             if ($e instanceof SupertextException && $e->errorCode === SupertextException::AUTHENTICATION_FAILURE) {
@@ -175,35 +145,5 @@ class NodeTranslator
         $this->logger->info(sprintf('Supertext: translated %d field(s) in %d node(s) from "%s" to "%s" in workspace "%s".',
             $result->fields, $result->nodes, $sourceLanguage, $targetLanguage, $result->workspace));
         return $result;
-    }
-
-    /**
-     * Adds the node and its tethered descendants (e.g. a page's "main" collection):
-     * Neos creates their variants together with the parent, without separate commands.
-     *
-     * @param array<string, array{0: Node, 1: array<string, bool>}> $nodes
-     */
-    private function collect(ContentRepository $contentRepository, ContentSubgraphInterface $subgraph, Node $node, array &$nodes): void
-    {
-        if (isset($nodes[$node->aggregateId->value])) {
-            return;
-        }
-        $nodeType = $contentRepository->getNodeTypeManager()->getNodeType($node->nodeTypeName);
-        if ($nodeType === null) {
-            return;
-        }
-        $nodes[$node->aggregateId->value] = [$node, $this->propertySelector->translatableProperties($nodeType)];
-        foreach ($nodeType->tetheredNodeTypeDefinitions as $definition) {
-            $child = $subgraph->findNodeByPath($definition->name, $node->aggregateId);
-            if ($child !== null) {
-                $this->collect($contentRepository, $subgraph, $child, $nodes);
-            }
-        }
-    }
-
-    private function isDocument(ContentRepository $contentRepository, Node $node): bool
-    {
-        return $contentRepository->getNodeTypeManager()->getNodeType($node->nodeTypeName)
-            ?->isOfType(NodeTypeNameFactory::NAME_DOCUMENT) ?? false;
     }
 }

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file original="" product-name="Supertext.NeosTranslation" source-language="en" target-language="de" datatype="plaintext">
+		<body>
+			<trans-unit id="module.label" xml:space="preserve">
+				<source>Supertext</source>
+				<target state="final">Supertext</target>
+			</trans-unit>
+			<trans-unit id="module.description" xml:space="preserve">
+				<source>Export pages for translation as XLIFF or HTML files and import the translated files.</source>
+				<target state="final">Seiten als XLIFF- oder HTML-Datei für die Übersetzung exportieren und die übersetzten Dateien importieren.</target>
+			</trans-unit>
+			<trans-unit id="export.title" xml:space="preserve">
+				<source>Export for translation</source>
+				<target state="final">Für Übersetzung exportieren</target>
+			</trans-unit>
+			<trans-unit id="export.hint" xml:space="preserve">
+				<source>Download the page's texts as a file for a translation tool, a translator or Supertext's web app. Import the translated file again under Import translation.</source>
+				<target state="final">Laden Sie die Texte der Seite als Datei für ein Übersetzungstool, ein Übersetzungsbüro oder die Web-App von Supertext herunter. Die übersetzte Datei importieren Sie wieder unter Übersetzung importieren.</target>
+			</trans-unit>
+			<trans-unit id="export.page" xml:space="preserve">
+				<source>Page (with its content)</source>
+				<target state="final">Seite (mit ihren Inhalten)</target>
+			</trans-unit>
+			<trans-unit id="export.source" xml:space="preserve">
+				<source>Source language: {0}. The texts are taken from your workspace.</source>
+				<target state="final">Ausgangssprache: {0}. Die Texte stammen aus Ihrem Arbeitsbereich.</target>
+			</trans-unit>
+			<trans-unit id="export.languages" xml:space="preserve">
+				<source>Languages</source>
+				<target state="final">Sprachen</target>
+			</trans-unit>
+			<trans-unit id="export.format" xml:space="preserve">
+				<source>File format</source>
+				<target state="final">Dateiformat</target>
+			</trans-unit>
+			<trans-unit id="export.format.xliff" xml:space="preserve">
+				<source>XLIFF 1.2 (for translation tools)</source>
+				<target state="final">XLIFF 1.2 (für Übersetzungstools)</target>
+			</trans-unit>
+			<trans-unit id="export.format.html" xml:space="preserve">
+				<source>HTML (one language per file)</source>
+				<target state="final">HTML (eine Sprache pro Datei)</target>
+			</trans-unit>
+			<trans-unit id="export.download" xml:space="preserve">
+				<source>Download file</source>
+				<target state="final">Datei herunterladen</target>
+			</trans-unit>
+			<trans-unit id="export.noPages" xml:space="preserve">
+				<source>There are no pages to export.</source>
+				<target state="final">Es gibt keine Seiten zum Exportieren.</target>
+			</trans-unit>
+			<trans-unit id="export.noTargets" xml:space="preserve">
+				<source>The site has no other language to translate into.</source>
+				<target state="final">Die Website hat keine weitere Sprache, in die übersetzt werden kann.</target>
+			</trans-unit>
+			<trans-unit id="import.title" xml:space="preserve">
+				<source>Import translation</source>
+				<target state="final">Übersetzung importieren</target>
+			</trans-unit>
+			<trans-unit id="import.hint" xml:space="preserve">
+				<source>Upload a file exported with Export for translation (any page, at most 10 MB). The translations are saved in your workspace, like translations made with Supertext: review and publish them as usual.</source>
+				<target state="final">Laden Sie eine Datei hoch, die mit „Für Übersetzung exportieren“ erstellt wurde (beliebige Seite, höchstens 10 MB). Die Übersetzungen werden wie Übersetzungen mit Supertext in Ihrem Arbeitsbereich gespeichert: Prüfen und veröffentlichen Sie sie wie gewohnt.</target>
+			</trans-unit>
+			<trans-unit id="import.file" xml:space="preserve">
+				<source>Translated file (XLIFF or HTML)</source>
+				<target state="final">Übersetzte Datei (XLIFF oder HTML)</target>
+			</trans-unit>
+			<trans-unit id="import.includeChanged" xml:space="preserve">
+				<source>Also import texts whose source changed since the export</source>
+				<target state="final">Auch Texte importieren, deren Ausgangstext sich seit dem Export geändert hat</target>
+			</trans-unit>
+			<trans-unit id="import.noFile" xml:space="preserve">
+				<source>Choose a file to import.</source>
+				<target state="final">Wählen Sie eine Datei zum Importieren.</target>
+			</trans-unit>
+			<trans-unit id="import.result" xml:space="preserve">
+				<source>Result of the import</source>
+				<target state="final">Ergebnis des Imports</target>
+			</trans-unit>
+			<trans-unit id="import.job" xml:space="preserve">
+				<source>{0} → {1}: {2}</source>
+				<target state="final">{0} → {1}: {2}</target>
+			</trans-unit>
+			<trans-unit id="import.publish" xml:space="preserve">
+				<source>Review the translations in your workspace and publish them.</source>
+				<target state="final">Prüfen Sie die Übersetzungen in Ihrem Arbeitsbereich und veröffentlichen Sie sie.</target>
+			</trans-unit>
+			<trans-unit id="summary.ok" xml:space="preserve">
+				<source>Imported: {0}</source>
+				<target state="final">Importiert: {0}</target>
+			</trans-unit>
+			<trans-unit id="summary.changed" xml:space="preserve">
+				<source>Skipped, source changed since the export: {0}</source>
+				<target state="final">Übersprungen, Ausgangstext seit dem Export geändert: {0}</target>
+			</trans-unit>
+			<trans-unit id="summary.untranslated" xml:space="preserve">
+				<source>Not translated in the file: {0}</source>
+				<target state="final">In der Datei nicht übersetzt: {0}</target>
+			</trans-unit>
+			<trans-unit id="summary.invalid" xml:space="preserve">
+				<source>Formatting changed, not imported: {0}</source>
+				<target state="final">Formatierung verändert, nicht importiert: {0}</target>
+			</trans-unit>
+			<trans-unit id="summary.missing" xml:space="preserve">
+				<source>Not in the file: {0}</source>
+				<target state="final">Nicht in der Datei: {0}</target>
+			</trans-unit>
+			<trans-unit id="error.nothing_to_translate" xml:space="preserve">
+				<source>Nothing to translate.</source>
+				<target state="final">Nichts zu übersetzen.</target>
+			</trans-unit>
+			<trans-unit id="error.invalid_request" xml:space="preserve">
+				<source>Choose at least one language (exactly one for HTML).</source>
+				<target state="final">Wählen Sie mindestens eine Sprache (für HTML genau eine).</target>
+			</trans-unit>
+			<trans-unit id="error.invalid_file" xml:space="preserve">
+				<source>This file isn't a valid XLIFF or HTML translation file.</source>
+				<target state="final">Diese Datei ist keine gültige XLIFF- oder HTML-Übersetzungsdatei.</target>
+			</trans-unit>
+			<trans-unit id="error.missing_metadata" xml:space="preserve">
+				<source>This file wasn't exported by the Supertext package, or its header was removed.</source>
+				<target state="final">Diese Datei wurde nicht vom Supertext-Paket exportiert, oder ihr Kopfbereich wurde entfernt.</target>
+			</trans-unit>
+			<trans-unit id="error.too_large" xml:space="preserve">
+				<source>The file is too large (at most 10 MB).</source>
+				<target state="final">Die Datei ist zu groß (höchstens 10 MB).</target>
+			</trans-unit>
+			<trans-unit id="error.other_system" xml:space="preserve">
+				<source>This file belongs to another system ({0}).</source>
+				<target state="final">Diese Datei gehört zu einem anderen System ({0}).</target>
+			</trans-unit>
+			<trans-unit id="error.not_found" xml:space="preserve">
+				<source>The page this file was exported from no longer exists.</source>
+				<target state="final">Die Seite, aus der diese Datei exportiert wurde, existiert nicht mehr.</target>
+			</trans-unit>
+			<trans-unit id="error.no_language" xml:space="preserve">
+				<source>The site has no language {0}.</source>
+				<target state="final">Die Website hat keine Sprache {0}.</target>
+			</trans-unit>
+			<trans-unit id="mapping.module.label" xml:space="preserve">
+				<source>Supertext</source>
+				<target state="final">Supertext</target>
+			</trans-unit>
+			<trans-unit id="mapping.module.description" xml:space="preserve">
+				<source>Choose the Supertext language of each language of your sites.</source>
+				<target state="final">Wählen Sie die Supertext-Sprache für jede Sprache Ihrer Websites.</target>
+			</trans-unit>
+			<trans-unit id="mapping.title" xml:space="preserve">
+				<source>Languages</source>
+				<target state="final">Sprachen</target>
+			</trans-unit>
+			<trans-unit id="mapping.hint" xml:space="preserve">
+				<source>Choose which Supertext language each language of your sites is translated into and from. Where the choice is obvious, Supertext's suggestion is preselected (de → German (Germany)); a language without a suggestion can't be translated until you choose one.</source>
+				<target state="final">Wählen Sie, in welche und aus welcher Supertext-Sprache jede Sprache Ihrer Websites übersetzt wird. Wo die Wahl eindeutig ist, ist der Vorschlag von Supertext vorausgewählt (de → Deutsch (Deutschland)); eine Sprache ohne Vorschlag kann erst übersetzt werden, wenn Sie eine wählen.</target>
+			</trans-unit>
+			<trans-unit id="mapping.language" xml:space="preserve">
+				<source>Language</source>
+				<target state="final">Sprache</target>
+			</trans-unit>
+			<trans-unit id="mapping.code" xml:space="preserve">
+				<source>Supertext language</source>
+				<target state="final">Supertext-Sprache</target>
+			</trans-unit>
+			<trans-unit id="mapping.politeness" xml:space="preserve">
+				<source>Form of address</source>
+				<target state="final">Anrede</target>
+			</trans-unit>
+			<trans-unit id="mapping.politeness.default" xml:space="preserve">
+				<source>Default</source>
+				<target state="final">Standard</target>
+			</trans-unit>
+			<trans-unit id="mapping.politeness.more" xml:space="preserve">
+				<source>Formal</source>
+				<target state="final">Formell (Sie)</target>
+			</trans-unit>
+			<trans-unit id="mapping.politeness.less" xml:space="preserve">
+				<source>Informal</source>
+				<target state="final">Informell (du)</target>
+			</trans-unit>
+			<trans-unit id="mapping.choose" xml:space="preserve">
+				<source>— choose —</source>
+				<target state="final">— wählen —</target>
+			</trans-unit>
+			<trans-unit id="mapping.suggested" xml:space="preserve">
+				<source>Supertext's suggestion</source>
+				<target state="final">Vorschlag von Supertext</target>
+			</trans-unit>
+			<trans-unit id="mapping.none" xml:space="preserve">
+				<source>No suggestion: choose a Supertext language, otherwise this language can't be translated.</source>
+				<target state="final">Kein Vorschlag: Wählen Sie eine Supertext-Sprache, sonst kann diese Sprache nicht übersetzt werden.</target>
+			</trans-unit>
+			<trans-unit id="mapping.fromSettings" xml:space="preserve">
+				<source>Set in Settings.yaml (Supertext.NeosTranslation.languages.{0}.code)</source>
+				<target state="final">In Settings.yaml festgelegt (Supertext.NeosTranslation.languages.{0}.code)</target>
+			</trans-unit>
+			<trans-unit id="mapping.politenessFromSettings" xml:space="preserve">
+				<source>Set in Settings.yaml (Supertext.NeosTranslation.languages.{0}.politeness)</source>
+				<target state="final">In Settings.yaml festgelegt (Supertext.NeosTranslation.languages.{0}.politeness)</target>
+			</trans-unit>
+			<trans-unit id="mapping.save" xml:space="preserve">
+				<source>Save</source>
+				<target state="final">Speichern</target>
+			</trans-unit>
+			<trans-unit id="mapping.saved" xml:space="preserve">
+				<source>The languages were saved.</source>
+				<target state="final">Die Sprachen wurden gespeichert.</target>
+			</trans-unit>
+			<trans-unit id="mapping.invalid" xml:space="preserve">
+				<source>Not saved: no valid Supertext language chosen for {0}.</source>
+				<target state="final">Nicht gespeichert: Für {0} ist keine gültige Supertext-Sprache gewählt.</target>
+			</trans-unit>
+			<trans-unit id="mapping.noLanguages" xml:space="preserve">
+				<source>Your content repository has no language dimension "{0}" (setting Supertext.NeosTranslation.languageDimension).</source>
+				<target state="final">Ihr Content Repository hat keine Sprachdimension "{0}" (Einstellung Supertext.NeosTranslation.languageDimension).</target>
+			</trans-unit>
+			<trans-unit id="mapping.version" xml:space="preserve">
+				<source>Supertext Translation for Neos {0}</source>
+				<target state="final">Supertext Translation for Neos {0}</target>
+			</trans-unit>
+			<trans-unit id="mapping.review" xml:space="preserve">
+				<source>Translation review</source>
+				<target state="final">Übersetzungsprüfung</target>
+			</trans-unit>
+			<trans-unit id="mapping.review.help" xml:space="preserve">
+				<source>Translation review: translations into a ticked language go through Supertext's review service, so reviewers can check and correct them on the website with the Supertext Localization Review extension. Their corrections are used the next time the page is translated.</source>
+				<target state="final">Übersetzungsprüfung: Übersetzungen in eine angekreuzte Sprache laufen über den Prüfdienst von Supertext, damit Prüferinnen und Prüfer sie mit der Erweiterung Supertext Localization Review direkt auf der Website kontrollieren und korrigieren können. Ihre Korrekturen werden beim nächsten Übersetzen der Seite übernommen.</target>
+			</trans-unit>
+			<trans-unit id="mapping.review.off" xml:space="preserve">
+				<source>Translation review is off for all languages: the setting Supertext.NeosTranslation.reviewUrl is empty.</source>
+				<target state="final">Die Übersetzungsprüfung ist für alle Sprachen ausgeschaltet: Die Einstellung Supertext.NeosTranslation.reviewUrl ist leer.</target>
+			</trans-unit>
+			<trans-unit id="mapping.reviewFromSettings" xml:space="preserve">
+				<source>Set in Settings.yaml (Supertext.NeosTranslation.languages.{0}.review)</source>
+				<target state="final">In Settings.yaml festgelegt (Supertext.NeosTranslation.languages.{0}.review)</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

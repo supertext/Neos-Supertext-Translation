@@ -21,7 +21,10 @@ spl_autoload_register(static function (string $class): void {
     }
 });
 require_once __DIR__ . '/../Classes/Api/GuzzleHttpTransport.php';
+require_once __DIR__ . '/../Classes/Service/LanguageMapping.php';
+require_once __DIR__ . '/../Classes/Configuration/PackageVersion.php';
 require_once __DIR__ . '/../Classes/Configuration/Settings.php';
+require_once __DIR__ . '/../Classes/Api/SupertextClientFactory.php';
 require_once __DIR__ . '/../Classes/Service/LanguageResolver.php';
 require_once __DIR__ . '/../Classes/Service/ErrorMessages.php';
 
@@ -30,12 +33,14 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use Supertext\NeosTranslation\Api\GuzzleHttpTransport;
+use Supertext\NeosTranslation\Api\SupertextClientFactory;
 use Supertext\NeosTranslation\Configuration\Settings;
 use Supertext\NeosTranslation\Sdk\V1\Client;
 use Supertext\NeosTranslation\Sdk\V1\Languages;
 use Supertext\NeosTranslation\Sdk\V1\Segment;
 use Supertext\NeosTranslation\Sdk\V1\SupertextException;
 use Supertext\NeosTranslation\Service\ErrorMessages;
+use Supertext\NeosTranslation\Service\LanguageMapping;
 use Supertext\NeosTranslation\Service\LanguageResolver;
 
 $failures = [];
@@ -46,8 +51,9 @@ $check = static function (string $name, mixed $actual, mixed $expected) use (&$f
 };
 
 // 1. Neos language dimension values, as LanguageResolver hands them to the SDK: the
-//    mapping (languages.<value>.code) wins, else an exact Supertext code, else nothing is sent.
-$mapping = Settings::mappingFrom([
+//    mapping (languages.<value>.code) wins, else an exact Supertext code, else the SDK's
+//    default where one is obvious (SDK 0.4.0), else nothing is sent.
+$mapping = LanguageMapping::overrides([
     'de' => ['code' => 'de-CH', 'politeness' => 'more'],
     'en_UK' => ['code' => 'en-GB'],
     'fr' => ['politeness' => 'more'],           // no code: not part of the mapping
@@ -61,15 +67,16 @@ $check('target exact bare es', Languages::target('es', $mapping), 'es');
 $check('target exact de_ch', Languages::target('de_ch'), 'de-CH');
 $check('source en_US', Languages::source('en_US', $mapping), 'en');
 $check('source mapped de (sent bare)', Languages::source('de', $mapping), 'de');
-$check('target unmapped fr', LanguageResolver::resolveTarget('fr', $mapping), null);
-$check('target no default region es-ES', LanguageResolver::resolveTarget('es_ES', $mapping), null);
+$check('target unmapped fr: default', LanguageResolver::resolveTarget('fr', $mapping), 'fr-FR');
+$check('target region of a bare code es_ES: default', LanguageResolver::resolveTarget('es_ES', $mapping), 'es');
+$check('target without default en_IE', LanguageResolver::resolveTarget('en_IE', $mapping), null);
 try {
-    Languages::target('fr', $mapping);
-    $failures[] = 'expected unsupported_language for fr';
+    Languages::target('gsw', $mapping);
+    $failures[] = 'expected unsupported_language for gsw';
 } catch (SupertextException $e) {
-    $check('unmapped fr: error code', $e->errorCode, 'unsupported_language');
-    $check('unmapped fr: message names the setting', ErrorMessages::forException($e),
-        "The language fr has no Supertext language yet. Ask your administrator to map it (Supertext.NeosTranslation.languages.fr.code in Settings.yaml, e.g. 'de-CH').");
+    $check('unmapped gsw: error code', $e->errorCode, 'unsupported_language');
+    $check('unmapped gsw: message names the setting', ErrorMessages::forException($e),
+        "The language gsw has no Supertext language yet. Ask your administrator to choose one under Administration → Supertext (or to set Supertext.NeosTranslation.languages.gsw.code in Settings.yaml, e.g. 'de-CH').");
 }
 $check('politeness unsupported for en-US', LanguageResolver::politenessUnsupported('en-US', 'more'), true);
 $check('politeness supported for de-CH', LanguageResolver::politenessUnsupported('de-CH', 'more'), false);
@@ -142,6 +149,58 @@ try {
     $check('unknown language: error code', $e->errorCode, 'invalid_language_pair');
     $check('unknown language: codes', [$e->sourceLang, $e->targetLang], ['en', 'xx-YY']);
 }
+
+// 5. Translation review: a language with review on goes to the review service (all four calls),
+//    others go directly to Supertext; an empty reviewUrl turns it off; the default is
+//    Supertext's review service; SUPERTEXT_REVIEW_URL wins.
+$factory = static function (array $settingsValues): SupertextClientFactory {
+    $settings = (new ReflectionClass(Settings::class))->newInstanceWithoutConstructor();
+    (fn () => $this->settings = $settingsValues)->call($settings);
+    $factory = new SupertextClientFactory();
+    (fn () => $this->settings = $settings)->call($factory);
+    return $factory;
+};
+$run = static function (SupertextClientFactory $factory, bool $review): array {
+    $history = [];
+    $stack = HandlerStack::create(new MockHandler([
+        new Response(200, [], '{"file_id":"r1"}'),
+        new Response(200, [], '{"status":"done"}'),
+        new Response(200, [], '<html><body><div data-st-id="0">Hallo</div></body></html>'),
+        new Response(204),
+    ]));
+    $stack->push(Middleware::history($history));
+    $factory->create($review, new GuzzleHttpTransport(new \GuzzleHttp\Client(['handler' => $stack])))->translateTexts([new Segment('Hello')], 'de-CH', 'en');
+    return array_map(static fn (array $h): string => $h['request']->getMethod() . ' ' . $h['request']->getUri(), $history);
+};
+$base = ['apiKey' => 'test-key', 'endpoint' => 'https://api.supertext.com/v1/', 'pollInterval' => 1, 'pollTimeout' => 30];
+putenv('SUPERTEXT_REVIEW_URL');
+$check('review: default is the review service', (fn () => $this->settings->getReviewUrl())->call($factory($base)), SupertextClientFactory::REVIEW_URL);
+$check('review: default URL', SupertextClientFactory::REVIEW_URL, 'https://localizationreview-production.up.railway.app/v1/');
+$check('review language goes to the review service (all four calls)', $run($factory($base + ['reviewUrl' => 'https://review.test/v1']), true), [
+    'POST https://review.test/v1/translate/ai/file',
+    'GET https://review.test/v1/translate/ai/file/r1/status',
+    'GET https://review.test/v1/translate/ai/file/r1/translation',
+    'DELETE https://review.test/v1/translate/ai/file/r1',
+]);
+$check('other languages go directly to Supertext', $run($factory($base + ['reviewUrl' => 'https://review.test/v1']), false), [
+    'POST https://api.supertext.com/v1/translate/ai/file',
+    'GET https://api.supertext.com/v1/translate/ai/file/r1/status',
+    'GET https://api.supertext.com/v1/translate/ai/file/r1/translation',
+    'DELETE https://api.supertext.com/v1/translate/ai/file/r1',
+]);
+$check('empty reviewUrl: review off, directly to Supertext', $run($factory($base + ['reviewUrl' => '']), true)[0], 'POST https://api.supertext.com/v1/translate/ai/file');
+$check('reviewUrl equal to the API: no second endpoint', SupertextClientFactory::baseUrl(true, 'https://api.supertext.com/v1/', 'https://api.supertext.com/v1'), 'https://api.supertext.com/v1/');
+putenv('SUPERTEXT_REVIEW_URL=https://other-review.test/v1');
+$check('SUPERTEXT_REVIEW_URL wins', $run($factory($base + ['reviewUrl' => '']), true)[0], 'POST https://other-review.test/v1/translate/ai/file');
+putenv('SUPERTEXT_REVIEW_URL');
+$userAgent = null;
+$uaStack = HandlerStack::create(new MockHandler([new Response(200, [], '{}')]));
+$uaStack->push(Middleware::mapRequest(static function ($request) use (&$userAgent) { $userAgent = $request->getHeaderLine('User-Agent'); return $request; }));
+try {
+    $factory($base)->create(true, new GuzzleHttpTransport(new \GuzzleHttp\Client(['handler' => $uaStack])))->getFeatures();
+} catch (\Throwable) {
+}
+$check('review client: same User-Agent with the package version', str_contains((string)$userAgent, 'Neos-Supertext-Translation/'), true);
 
 foreach ($failures as $failure) {
     fwrite(STDERR, $failure . "\n");

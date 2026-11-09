@@ -15,6 +15,14 @@ Supertext:
     # Live: https://api.supertext.com/v1/  (also api.staging… / api.testing…)
     endpoint: 'https://api.supertext.com/v1/'
 
+    # Supertext's review service for languages with "Translation review" on (checkbox under
+    # Administration -> Supertext, or languages.<value>.review): translations into them go
+    # there instead of the endpoint; it speaks the same API and forwards to the live Supertext
+    # API with your key, so reviewers can correct the translations on the website.
+    # SUPERTEXT_REVIEW_URL takes precedence when set. '' turns review off for every language.
+    # Only change it when Supertext gives you another address.
+    reviewUrl: 'https://localizationreview-production.up.railway.app/v1/'
+
     # Seconds between status checks / maximum seconds to wait for one document.
     pollInterval: 2
     pollTimeout: 240
@@ -22,18 +30,22 @@ Supertext:
     # Name of the language dimension in the content repository.
     languageDimension: 'language'
 
-    # Language mapping and per-language settings, keyed by dimension value. Supertext
-    # accepts only its own codes (see docs/INSTALLATION.md -> Supertext language codes):
-    # regional for German, English, French, Italian and Portuguese ("de-CH", "en-US",
-    # "pt-BR"), a script for Chinese and Serbian ("zh-Hans", "sr-Latn"), bare for the
-    # others ("es", "nl"). A dimension value that already is such a code (apart from case
-    # and "_"/"-", e.g. "en_US" or "es") needs no entry; any other ("de", "en_UK") must be
-    # mapped, or translating into or from it stops with "has no Supertext language yet".
-    # Nothing is guessed: whether "de" means Germany or Switzerland is your decision.
+    # Language mapping: which Supertext code each value of the language dimension is
+    # translated with. Normally chosen under Administration → Supertext (one combo box per
+    # language, stored in the persistent cache Supertext_NeosTranslation_State). Entries here
+    # override that choice for the languages they name (for automated setups; the module
+    # shows them read-only). Without either, the Supertext SDK decides: a value that is a
+    # Supertext code apart from case and "_"/"-" ("en_US", "es") is used as it is; a value
+    # with an obvious default gets it ("de" -> "de-DE", "en" -> "en-US", "fr" -> "fr-FR",
+    # "it" -> "it-IT", "pt" -> "pt-PT", "zh" -> "zh-Hans", "es_ES" -> "es"); any other
+    # ("en_UK", "en_IE", "gsw") stops with "has no Supertext language yet" until it is mapped.
+    # See docs/INSTALLATION.md -> Languages.
     #   code:       Supertext code for this language, e.g. "de-CH" (used as source too: "de")
     #   politeness: "more" (formal: Sie/vous), "less" (informal: du/tu) or "default";
     #               only for targets that offer it (supertext:check warns otherwise)
-    #   enabled:    false to never translate into this language
+    #   review:     true/false: Translation review for translations into this language
+    #               (overrides the module's checkbox; see reviewUrl)
+    #   enabled:    false to never translate into this language (Settings.yaml only)
     languages: []
     #  de:
     #    code: 'de-CH'
@@ -64,6 +76,38 @@ Supertext:
       - 'uriPathSegment'
 
 Neos:
+  Neos:
+    # The back-end menu (Neos UI) shows the modules' labels from xliff.json: include the
+    # package's Main.xlf there, or the menu shows the label ids instead of "Supertext".
+    userInterface:
+      translation:
+        autoInclude:
+          Supertext.NeosTranslation:
+            - Main
+    modules:
+      management:
+        submodules:
+          # Management → Supertext: Export for translation / Import translation
+          # (access: Policy.yaml, Supertext.NeosTranslation:Module.TranslationFiles).
+          supertext:
+            label: 'Supertext.NeosTranslation:Main:module.label'
+            description: 'Supertext.NeosTranslation:Main:module.description'
+            controller: 'Supertext\NeosTranslation\Controller\TranslationFilesController'
+            icon: 'fas fa-language'
+            mainStylesheet: 'Lite'
+            privilegeTarget: 'Supertext.NeosTranslation:Module.TranslationFiles'
+      administration:
+        submodules:
+          # Administration → Supertext: language mapping, one combo box per language
+          # (access: Policy.yaml, Supertext.NeosTranslation:Module.LanguageMapping).
+          supertext:
+            label: 'Supertext.NeosTranslation:Main:mapping.module.label'
+            description: 'Supertext.NeosTranslation:Main:mapping.module.description'
+            controller: 'Supertext\NeosTranslation\Controller\LanguageMappingController'
+            icon: 'fas fa-language'
+            mainStylesheet: 'Lite'
+            privilegeTarget: 'Supertext.NeosTranslation:Module.LanguageMapping'
+
   ContentRepositoryRegistry:
     presets:
       'default':
@@ -76,10 +120,10 @@ Neos:
       # Object management for the package's own classes only: the bundled Supertext SDK
       # (lib/supertext-sdk, Supertext\NeosTranslation\Sdk), the bundled Supertext Plugin Health
       # (lib/supertext-plugin-health, Supertext\NeosTranslation\PluginHealth),
-      # Reporting\Reporting and Reporting\PluginHealthTransport are plain PHP. Flow would
+      # Reporting\Reporting, Reporting\PluginHealthTransport and Files\ (translation files) are plain PHP. Flow would
       # otherwise proxy them, and the proxies break named constructor arguments.
       includeClasses:
-        'Supertext.NeosTranslation': ['^Supertext\\NeosTranslation\\(?!Sdk\\|PluginHealth\\|Reporting\\Reporting$|Reporting\\PluginHealthTransport$)']
+        'Supertext.NeosTranslation': ['^Supertext\\NeosTranslation\\(?!Sdk\\|PluginHealth\\|Files\\|Reporting\\Reporting$|Reporting\\PluginHealthTransport$)']
     http:
       middlewares:
         # Public GET /supertext/ping for the Supertext Commando Center (no session, no
