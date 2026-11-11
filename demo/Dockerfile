@@ -4,13 +4,14 @@
 # Needs a MariaDB/MySQL database (DB_* variables) and a volume at /data for uploads.
 # See docs/DEVELOPER.md -> Demo.
 
-FROM php:8.4-apache
+FROM php:8.5-apache
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
       libicu-dev libzip-dev libpng-dev libjpeg62-turbo-dev libfreetype6-dev libwebp-dev unzip git \
  && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
- && docker-php-ext-install -j"$(nproc)" intl zip gd opcache pdo_mysql exif \
+ && docker-php-ext-install -j"$(nproc)" intl zip gd pdo_mysql exif \
+ && { php -m | grep -q 'Zend OPcache' || docker-php-ext-install opcache; } \
  && a2enmod rewrite headers expires deflate \
  && rm -rf /var/lib/apt/lists/*
 
