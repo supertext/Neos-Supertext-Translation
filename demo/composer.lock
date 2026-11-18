@@ -1197,20 +1197,20 @@
         },
         {
             "name": "doctrine/deprecations",
-            "version": "1.1.6",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/deprecations.git",
-                "reference": "d4fe3e6fd9bb9e72557a19674f44d8ac7db4c6ca"
+                "reference": "d2e16653a734c8784c1851ad68b02f997b53ca82"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/deprecations/zipball/d4fe3e6fd9bb9e72557a19674f44d8ac7db4c6ca",
-                "reference": "d4fe3e6fd9bb9e72557a19674f44d8ac7db4c6ca",
+                "url": "https://api.github.com/repos/doctrine/deprecations/zipball/d2e16653a734c8784c1851ad68b02f997b53ca82",
+                "reference": "d2e16653a734c8784c1851ad68b02f997b53ca82",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1 || ^8.0"
+                "php": "^7.4 || ^8.0"
             },
             "conflict": {
                 "phpunit/phpunit": "<=7.5 || >=14"
@@ -1239,9 +1239,9 @@
             "homepage": "https://www.doctrine-project.org/",
             "support": {
                 "issues": "https://github.com/doctrine/deprecations/issues",
-                "source": "https://github.com/doctrine/deprecations/tree/1.1.6"
+                "source": "https://github.com/doctrine/deprecations/tree/1.2.0"
             },
-            "time": "2026-02-07T07:09:04+00:00"
+            "time": "2026-11-11T10:04:49+00:00"
         },
         {
             "name": "doctrine/event-manager",
@@ -1426,16 +1426,16 @@
         },
         {
             "name": "doctrine/instantiator",
-            "version": "2.1.0",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/instantiator.git",
-                "reference": "23da848e1a2308728fe5fdddabf4be17ff9720c7"
+                "reference": "bf3870fbe25c1b5f4febaf281be76d1e2d86df30"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/23da848e1a2308728fe5fdddabf4be17ff9720c7",
-                "reference": "23da848e1a2308728fe5fdddabf4be17ff9720c7",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/bf3870fbe25c1b5f4febaf281be76d1e2d86df30",
+                "reference": "bf3870fbe25c1b5f4febaf281be76d1e2d86df30",
                 "shasum": ""
             },
             "require": {
@@ -1445,15 +1445,15 @@
                 "doctrine/coding-standard": "^14",
                 "ext-pdo": "*",
                 "ext-phar": "*",
-                "phpbench/phpbench": "^1.2",
-                "phpstan/phpstan": "^2.1",
-                "phpstan/phpstan-phpunit": "^2.0",
-                "phpunit/phpunit": "^10.5.58"
+                "phpbench/phpbench": "^1.7",
+                "phpstan/phpstan": "^2.3",
+                "phpstan/phpstan-phpunit": "^2.1",
+                "phpunit/phpunit": "^13.4.6"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Doctrine\\Instantiator\\": "src/Doctrine/Instantiator/"
+                    "Doctrine\\Instantiator\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1475,7 +1475,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/instantiator/issues",
-                "source": "https://github.com/doctrine/instantiator/tree/2.1.0"
+                "source": "https://github.com/doctrine/instantiator/tree/2.2.0"
             },
             "funding": [
                 {
@@ -1491,7 +1491,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-05T06:47:08+00:00"
+            "time": "2026-11-15T20:06:55+00:00"
         },
         {
             "name": "doctrine/lexer",
@@ -1985,22 +1985,22 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.16.1",
+            "version": "7.16.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "81755d989b3007ca7f88a069857553cd08e7dc2e"
+                "reference": "c88a78082757dd5a0c44191651535259fcb6e605"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/81755d989b3007ca7f88a069857553cd08e7dc2e",
-                "reference": "81755d989b3007ca7f88a069857553cd08e7dc2e",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/c88a78082757dd5a0c44191651535259fcb6e605",
+                "reference": "c88a78082757dd5a0c44191651535259fcb6e605",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "guzzlehttp/promises": "^2.6",
-                "guzzlehttp/psr7": "^2.13.2",
+                "guzzlehttp/psr7": "^2.13.4",
                 "php": "^7.2.5 || ^8.0",
                 "psr/http-client": "^1.0",
                 "symfony/deprecation-contracts": "^2.5 || ^3.0",
@@ -2093,7 +2093,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.16.1"
+                "source": "https://github.com/guzzle/guzzle/tree/7.16.3"
             },
             "funding": [
                 {
@@ -2109,7 +2109,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-25T21:35:21+00:00"
+            "time": "2026-11-17T16:23:09+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -2197,16 +2197,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "2.13.2",
+            "version": "2.13.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "adee536f95101929f262b8c59e8a61472f347d58"
+                "reference": "ad5e3f872690e1151e1171de2963150fc45ea1e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/adee536f95101929f262b8c59e8a61472f347d58",
-                "reference": "adee536f95101929f262b8c59e8a61472f347d58",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/ad5e3f872690e1151e1171de2963150fc45ea1e3",
+                "reference": "ad5e3f872690e1151e1171de2963150fc45ea1e3",
                 "shasum": ""
             },
             "require": {
@@ -2296,7 +2296,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.13.2"
+                "source": "https://github.com/guzzle/psr7/tree/2.13.4"
             },
             "funding": [
                 {
@@ -2312,7 +2312,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-17T23:49:46+00:00"
+            "time": "2026-11-17T16:15:51+00:00"
         },
         {
             "name": "imagine/imagine",
@@ -2834,16 +2834,16 @@
         },
         {
             "name": "neos/cache",
-            "version": "9.2.2",
+            "version": "9.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/cache.git",
-                "reference": "c1185877b25cb32e321d78b1ac173aef34d394ef"
+                "reference": "991cde5228b6e2aedc970098b6ff30be3ebcaa3f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/neos/cache/zipball/c1185877b25cb32e321d78b1ac173aef34d394ef",
-                "reference": "c1185877b25cb32e321d78b1ac173aef34d394ef",
+                "url": "https://api.github.com/repos/neos/cache/zipball/991cde5228b6e2aedc970098b6ff30be3ebcaa3f",
+                "reference": "991cde5228b6e2aedc970098b6ff30be3ebcaa3f",
                 "shasum": ""
             },
             "require": {
@@ -2887,7 +2887,7 @@
             "description": "Neos Cache Framework",
             "homepage": "http://flow.neos.io",
             "support": {
-                "source": "https://github.com/neos/cache/tree/9.2.2"
+                "source": "https://github.com/neos/cache/tree/9.2.3"
             },
             "funding": [
                 {
@@ -2895,7 +2895,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-10-24T13:35:47+00:00"
+            "time": "2026-10-30T20:58:21+00:00"
         },
         {
             "name": "neos/composer-plugin",
@@ -3779,7 +3779,7 @@
         },
         {
             "name": "neos/eel",
-            "version": "9.2.2",
+            "version": "9.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/eel.git",
@@ -3815,7 +3815,7 @@
             ],
             "description": "The Embedded Expression Language (Eel) is a building block for creating Domain Specific Languages",
             "support": {
-                "source": "https://github.com/neos/eel/tree/9.2.2"
+                "source": "https://github.com/neos/eel/tree/9.2.3"
             },
             "funding": [
                 {
@@ -3827,7 +3827,7 @@
         },
         {
             "name": "neos/error-messages",
-            "version": "9.2.2",
+            "version": "9.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/error-messages.git",
@@ -3858,7 +3858,7 @@
             "description": "Flow error messages",
             "homepage": "http://flow.neos.io",
             "support": {
-                "source": "https://github.com/neos/error-messages/tree/9.2.2"
+                "source": "https://github.com/neos/error-messages/tree/9.2.3"
             },
             "funding": [
                 {
@@ -3870,16 +3870,16 @@
         },
         {
             "name": "neos/eventstore",
-            "version": "2.0.1",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/eventstore.git",
-                "reference": "16b21b83b34ca105d11092637cffb8f67781525c"
+                "reference": "63dd283461a120365308d60ddd88c7ba8f441ebb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/neos/eventstore/zipball/16b21b83b34ca105d11092637cffb8f67781525c",
-                "reference": "16b21b83b34ca105d11092637cffb8f67781525c",
+                "url": "https://api.github.com/repos/neos/eventstore/zipball/63dd283461a120365308d60ddd88c7ba8f441ebb",
+                "reference": "63dd283461a120365308d60ddd88c7ba8f441ebb",
                 "shasum": ""
             },
             "require": {
@@ -3907,7 +3907,7 @@
             "description": "Store for Event-Sourced applications",
             "support": {
                 "issues": "https://github.com/neos/eventstore/issues",
-                "source": "https://github.com/neos/eventstore/tree/2.0.1"
+                "source": "https://github.com/neos/eventstore/tree/2.0.2"
             },
             "funding": [
                 {
@@ -3915,7 +3915,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2026-08-07T14:38:13+00:00"
+            "time": "2026-11-12T15:13:23+00:00"
         },
         {
             "name": "neos/eventstore-doctrineadapter",
@@ -3970,16 +3970,16 @@
         },
         {
             "name": "neos/flow",
-            "version": "9.2.2",
+            "version": "9.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/flow.git",
-                "reference": "db230a0078620c35f215b8991a9b87b9dc501796"
+                "reference": "8707bf05b6df732cd8f5c9c95d5baa3494a6cc10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/neos/flow/zipball/db230a0078620c35f215b8991a9b87b9dc501796",
-                "reference": "db230a0078620c35f215b8991a9b87b9dc501796",
+                "url": "https://api.github.com/repos/neos/flow/zipball/8707bf05b6df732cd8f5c9c95d5baa3494a6cc10",
+                "reference": "8707bf05b6df732cd8f5c9c95d5baa3494a6cc10",
                 "shasum": ""
             },
             "require": {
@@ -4069,7 +4069,7 @@
             "description": "Flow Application Framework",
             "homepage": "http://flow.neos.io",
             "support": {
-                "source": "https://github.com/neos/flow/tree/9.2.2"
+                "source": "https://github.com/neos/flow/tree/9.2.3"
             },
             "funding": [
                 {
@@ -4077,11 +4077,11 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-10-24T13:57:08+00:00"
+            "time": "2026-11-13T09:09:56+00:00"
         },
         {
             "name": "neos/flow-log",
-            "version": "9.2.2",
+            "version": "9.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/flow-log.git",
@@ -4122,7 +4122,7 @@
             "description": "Flow Framework Logger",
             "homepage": "http://flow.neos.io",
             "support": {
-                "source": "https://github.com/neos/flow-log/tree/9.2.2"
+                "source": "https://github.com/neos/flow-log/tree/9.2.3"
             },
             "funding": [
                 {
@@ -4134,7 +4134,7 @@
         },
         {
             "name": "neos/fluid-adaptor",
-            "version": "9.2.2",
+            "version": "9.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/fluidadaptor.git",
@@ -4167,7 +4167,7 @@
             ],
             "description": "Fluid Templating Framework Adaptor",
             "support": {
-                "source": "https://github.com/neos/fluidadaptor/tree/9.2.2"
+                "source": "https://github.com/neos/fluidadaptor/tree/9.2.3"
             },
             "funding": [
                 {
@@ -4425,7 +4425,7 @@
         },
         {
             "name": "neos/http-factories",
-            "version": "9.2.2",
+            "version": "9.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/http-factories.git",
@@ -4461,7 +4461,7 @@
             "description": "PSR-17 HTTP Factories",
             "homepage": "http://flow.neos.io",
             "support": {
-                "source": "https://github.com/neos/http-factories/tree/9.2.2"
+                "source": "https://github.com/neos/http-factories/tree/9.2.3"
             },
             "funding": [
                 {
@@ -6223,7 +6223,7 @@
         },
         {
             "name": "neos/utility-arrays",
-            "version": "9.2.2",
+            "version": "9.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/utility-arrays.git",
@@ -6261,7 +6261,7 @@
             "description": "Flow Array Utilities",
             "homepage": "http://flow.neos.io",
             "support": {
-                "source": "https://github.com/neos/utility-arrays/tree/9.2.2"
+                "source": "https://github.com/neos/utility-arrays/tree/9.2.3"
             },
             "funding": [
                 {
@@ -6273,7 +6273,7 @@
         },
         {
             "name": "neos/utility-files",
-            "version": "9.2.2",
+            "version": "9.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/utility-files.git",
@@ -6311,7 +6311,7 @@
             "description": "Flow Files Utilities",
             "homepage": "http://flow.neos.io",
             "support": {
-                "source": "https://github.com/neos/utility-files/tree/9.2.2"
+                "source": "https://github.com/neos/utility-files/tree/9.2.3"
             },
             "funding": [
                 {
@@ -6323,7 +6323,7 @@
         },
         {
             "name": "neos/utility-mediatypes",
-            "version": "9.2.2",
+            "version": "9.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/utility-mediatypes.git",
@@ -6360,7 +6360,7 @@
             "description": "Flow Media Types Utilities",
             "homepage": "http://flow.neos.io",
             "support": {
-                "source": "https://github.com/neos/utility-mediatypes/tree/9.2.2"
+                "source": "https://github.com/neos/utility-mediatypes/tree/9.2.3"
             },
             "funding": [
                 {
@@ -6372,7 +6372,7 @@
         },
         {
             "name": "neos/utility-objecthandling",
-            "version": "9.2.2",
+            "version": "9.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/utility-objecthandling.git",
@@ -6410,7 +6410,7 @@
             "description": "Flow array/object property and type utilities",
             "homepage": "http://flow.neos.io",
             "support": {
-                "source": "https://github.com/neos/utility-objecthandling/tree/9.2.2"
+                "source": "https://github.com/neos/utility-objecthandling/tree/9.2.3"
             },
             "funding": [
                 {
@@ -6422,7 +6422,7 @@
         },
         {
             "name": "neos/utility-opcodecache",
-            "version": "9.2.2",
+            "version": "9.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/utility-opcodecache.git",
@@ -6455,7 +6455,7 @@
             "description": "Flow Opcode Cache Utilities",
             "homepage": "http://flow.neos.io",
             "support": {
-                "source": "https://github.com/neos/utility-opcodecache/tree/9.2.2"
+                "source": "https://github.com/neos/utility-opcodecache/tree/9.2.3"
             },
             "funding": [
                 {
@@ -6467,7 +6467,7 @@
         },
         {
             "name": "neos/utility-pdo",
-            "version": "9.2.2",
+            "version": "9.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/utility-pdo.git",
@@ -6500,7 +6500,7 @@
             "description": "Flow PDO Utilities",
             "homepage": "http://flow.neos.io",
             "support": {
-                "source": "https://github.com/neos/utility-pdo/tree/9.2.2"
+                "source": "https://github.com/neos/utility-pdo/tree/9.2.3"
             },
             "funding": [
                 {
@@ -6512,7 +6512,7 @@
         },
         {
             "name": "neos/utility-schema",
-            "version": "9.2.2",
+            "version": "9.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/utility-schema.git",
@@ -6550,7 +6550,7 @@
             "description": "Flow Schema Utilities",
             "homepage": "http://flow.neos.io",
             "support": {
-                "source": "https://github.com/neos/utility-schema/tree/9.2.2"
+                "source": "https://github.com/neos/utility-schema/tree/9.2.3"
             },
             "funding": [
                 {
@@ -6562,7 +6562,7 @@
         },
         {
             "name": "neos/utility-unicode",
-            "version": "9.2.2",
+            "version": "9.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neos/utility-unicode.git",
@@ -6598,7 +6598,7 @@
             "description": "Flow Unicode Utilities",
             "homepage": "http://flow.neos.io",
             "support": {
-                "source": "https://github.com/neos/utility-unicode/tree/9.2.2"
+                "source": "https://github.com/neos/utility-unicode/tree/9.2.3"
             },
             "funding": [
                 {
@@ -7328,16 +7328,16 @@
         },
         {
             "name": "ramsey/uuid",
-            "version": "4.9.4",
+            "version": "4.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/uuid.git",
-                "reference": "75d73f48d02797c2c285a7e9f348fadc0102ffe2"
+                "reference": "f9aa3efc8015fcbc013d84d699583b268ccb593a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/75d73f48d02797c2c285a7e9f348fadc0102ffe2",
-                "reference": "75d73f48d02797c2c285a7e9f348fadc0102ffe2",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/f9aa3efc8015fcbc013d84d699583b268ccb593a",
+                "reference": "f9aa3efc8015fcbc013d84d699583b268ccb593a",
                 "shasum": ""
             },
             "require": {
@@ -7349,23 +7349,22 @@
                 "rhumsaa/uuid": "self.version"
             },
             "require-dev": {
-                "captainhook/captainhook": "^5.25",
-                "captainhook/plugin-composer": "^5.3",
-                "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
-                "ergebnis/composer-normalize": "^2.47",
-                "mockery/mockery": "^1.6",
-                "paragonie/random-lib": "^2",
-                "php-mock/php-mock": "^2.6",
-                "php-mock/php-mock-mockery": "^1.5",
+                "captainhook/captainhook": "^5.29.3",
+                "captainhook/plugin-composer": "^5.3.3",
+                "dealerdirect/phpcodesniffer-composer-installer": "^1.2.1",
+                "mockery/mockery": "^1.6.15",
+                "paragonie/random-lib": "^2.0.3",
+                "php-mock/php-mock": "^2.7.0",
+                "php-mock/php-mock-mockery": "^1.5.0",
                 "php-parallel-lint/php-parallel-lint": "^1.4.0",
                 "phpbench/phpbench": "^1.2.14",
-                "phpstan/extension-installer": "^1.4",
-                "phpstan/phpstan": "^2.1",
-                "phpstan/phpstan-mockery": "^2.0",
-                "phpstan/phpstan-phpunit": "^2.0",
-                "phpunit/phpunit": "^9.6",
-                "slevomat/coding-standard": "^8.18",
-                "squizlabs/php_codesniffer": "^3.13"
+                "phpstan/extension-installer": "^1.4.3",
+                "phpstan/phpstan": "^2.3.5",
+                "phpstan/phpstan-mockery": "^2.0.0",
+                "phpstan/phpstan-phpunit": "^2.1.2",
+                "phpunit/phpunit": "^9.6.39",
+                "slevomat/coding-standard": "^8.31.3",
+                "squizlabs/php_codesniffer": "^4.0.4"
             },
             "suggest": {
                 "ext-bcmath": "Enables faster math with arbitrary-precision integers using BCMath.",
@@ -7400,9 +7399,9 @@
             ],
             "support": {
                 "issues": "https://github.com/ramsey/uuid/issues",
-                "source": "https://github.com/ramsey/uuid/tree/4.9.4"
+                "source": "https://github.com/ramsey/uuid/tree/4.10.0"
             },
-            "time": "2026-09-16T11:39:30+00:00"
+            "time": "2026-11-14T23:23:20+00:00"
         },
         {
             "name": "react/promise",
@@ -7687,7 +7686,7 @@
             "dist": {
                 "type": "path",
                 "url": "./DistributionPackages/Supertext.NeosTranslation",
-                "reference": "d0c8662d3264a5d7c16dd2321e6711c0b6ca035e"
+                "reference": "5ea1641ba81783f6556f3972ffbce026b9209b55"
             },
             "require": {
                 "ext-dom": "*",
