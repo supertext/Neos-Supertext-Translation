@@ -17,6 +17,9 @@
         "neos/contentrepository-core": "^9.0",
         "guzzlehttp/guzzle": "^7.4"
     },
+    "require-dev": {
+        "neos/contentgraph-doctrinedbaladapter": "^9.0"
+    },
     "autoload": {
         "psr-4": {
             "Supertext\\NeosTranslation\\": "Classes/",
