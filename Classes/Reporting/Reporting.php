@@ -124,8 +124,12 @@ final class Reporting
         }
     }
 
-    /** Without a site URL, reports are impossible: the reporter only checks the key. */
-    public function reporter(?string $siteUrl, ?bool $enabled = null): InstallationReporter
+    /**
+     * Without a site URL, reports are impossible: the reporter only checks the key.
+     *
+     * @param (callable(): list<array{code: string, supertext: ?string}>)|null $languages the language mapping (sendConfiguration only)
+     */
+    public function reporter(?string $siteUrl, ?bool $enabled = null, ?callable $languages = null): InstallationReporter
     {
         $siteUrl = self::normalizeSiteUrl($siteUrl);
         return new InstallationReporter(
@@ -144,7 +148,28 @@ final class Reporting
             reportUrl: $this->reportUrl,
             transport: $this->transport !== null ? new PluginHealthTransport($this->transport) : null,
             now: $this->now,
+            languages: $languages,
         );
+    }
+
+    /**
+     * "Send configuration to Supertext": one `extensions` report with the installed packages and the
+     * language mapping, sent now (also within the hour after a failed report). Nothing with reports
+     * off or without a site URL. Never throws.
+     *
+     * @param list<array{name: string, version?: ?string, active?: ?bool, type?: ?string}> $extensions
+     * @param list<array{code: string, supertext: ?string}>                                $languages
+     */
+    public function sendConfiguration(?string $siteUrl, array $extensions, array $languages): ?ReporterResult
+    {
+        try {
+            $result = $this->reporter($siteUrl, null, static fn (): array => $languages)->sendExtensions($this->loadState(), $extensions);
+            $this->saveState($result->state);
+            return $result;
+        } catch (\Throwable $e) {
+            $this->failed('sending the configuration', $e);
+            return null;
+        }
     }
 
     /** The SDK client for the key check (same endpoint, transport and User-Agent as before). */

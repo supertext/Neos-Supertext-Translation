@@ -59,6 +59,7 @@ Every Supertext plugin reports to the Supertext Commando Center (Commando-Center
 | `supertext:translate` | `onRequest` | `SupertextCommandController` |
 | A translation got 401/403 | `authenticationFailed` | `NodeTranslator` |
 | `supertext:check` | key check with reports disabled (`testConnection`), then `reportCheck` | `Reporting::checkAndReport()` |
+| *Send configuration to Supertext* (Administration → Supertext, `sendConfigurationAction`, Policy `Module.LanguageMapping.Actions`) | `sendExtensions`: an `extensions` report, at once (also within the hour after a failed report), nothing with reports off | `ReportingService::sendConfiguration()` (packages of Composer type `neos-*` outside the `neos/` vendor, with their installed version; every language dimension value with `LanguageResolver::targetCodeOrNull()`) → `Reporting::sendConfiguration()` |
 
 - Runs synchronously (Flow middlewares have no after-response hook), but is usually a cache read: Supertext is only called when the key changed (10 s max), the center only when something is due (3 s max), and a failed report blocks further attempts for an hour.
 - **Setting:** `versionReports` (default `true`) via `InstallationReporter::reportsEnabled()`, so `SUPERTEXT_VERSION_REPORTS` wins. Off: nothing is sent, the ping answers 404, the key check still runs.
@@ -73,7 +74,7 @@ Every Supertext plugin reports to the Supertext Commando Center (Commando-Center
 
 **Bundled copy:** `lib/supertext-plugin-health/` (the PHP `src/`, `LICENSE`, `COMMIT`, `VERSION`, a short README), namespace changed from `Supertext\PluginHealth` to `Supertext\NeosTranslation\PluginHealth`, autoloaded by `composer.json`, excluded from Flow's object management like the SDK and only scanned (not analysed) by PHPStan.
 
-- Update it with `scripts/vendor-plugin-health.sh [commit-or-branch]`, e.g. `scripts/vendor-plugin-health.sh plugin-health-v0.1.0` (default `main`; `PLUGIN_HEALTH_DIR=<clone>` uses a local clone of Commando-Center-Supertext-Translation), run the tests, and commit with a CHANGELOG entry.
+- Update it with `scripts/vendor-plugin-health.sh [commit-or-branch]`, e.g. `scripts/vendor-plugin-health.sh plugin-health-v0.4.0` (default `main`; `PLUGIN_HEALTH_DIR=<clone>` uses a local clone of Commando-Center-Supertext-Translation), run the tests, and commit with a CHANGELOG entry.
 - Never edit the copy: fix it in Commando-Center-Supertext-Translation → `plugin-health/`, then re-run the script.
 
 ## Translation files (Management → Supertext, supertext:export, supertext:import)
@@ -181,7 +182,7 @@ The PHP tests use fakes. `.github/workflows/e2e.yml` also tests against the **re
 1. **Real API** (repository or organization secret `SUPERTEXT_API_KEY`; without it these steps are skipped with a warning). Version reports are off (`SUPERTEXT_VERSION_REPORTS=0`), so CI runs don't appear in the Commando Center.
    - `Tests/E2E/features.mjs` asks the live `GET features` (cost-free, no package or SDK code) whether every pair the demo translates (`en` → `de-CH`, `fr-CH`, `it-CH`) is offered; a missing pair fails the run. Whether the package's own language list matches the API is the SDK's job (its own tests).
    - `Tests/E2E/live.mjs` (Playwright, as the demo **editor**, through the Neos UI): opens *Text & images* and *Multiple columns* in English (US), switches to Français and then Italiano and clicks *Create and copy* (which also creates and translates the parent pages *Home* and *Features*). It watches the package's `X-Supertext-Translated` / `X-Supertext-Error` response headers (an error or HTTP 5xx fails), then checks the content repository tables (`cr_default_p_graph_*`): the translated pages are in the editor's workspace and nothing in `live` (the editor publishes); every visible content element of each translated page has a variant in the target language and nothing is duplicated (a document Neos creates along with its parent without content, like *Not Found*, is only noted); every text field (titles, values with spaces or markup; `uriPathSegment` excluded) is filled and at least 80 % of them changed (single words like "Home" can stay the same; unchanged ones are listed as `note`); no `data-st-id`/placeholder is left; links (`<a `, `node://`, `asset://`), bold, italics and list items are kept; the text is in the target language (common words of each language counted). German isn't translated (Neos.Demo already has German content) and translating again isn't tested (the package has no retranslate action). Each run translates two pages and their parents into two languages.
-2. **Stand-in API**: the docs screenshots (see *Docs screenshots*), so the images don't change with each machine translation. If `docs/images/` changed and the screenshot step succeeded, a second job (only on `main`) commits the new images straight to `main` ("Docs: regenerate screenshots"). There is no pull request to review, and the push, made with the workflow's own token, starts no other workflow.
+2. **Docs screenshots** (see *Docs screenshots*) with the same secret, so the guides show real Supertext translations; without it the stand-in API translates. Version reports go to the stand-in either way. If `docs/images/` changed and the screenshot step succeeded, a second job (only on `main`) commits the new images straight to `main` ("Docs: regenerate screenshots"). There is no pull request to review, and the push, made with the workflow's own token, starts no other workflow.
 
 If a run fails, the artifact `e2e-debug` has the result screenshots of each step, the container logs, Flow's `Data/Logs` of both demos and the stand-in log. Locally:
 
@@ -195,7 +196,9 @@ BASE_URL=http://127.0.0.1:8081 DATABASE_URL=mysql://user:pass@127.0.0.1:3306/neo
 
 ## Docs screenshots
 
-`docs/images/` is generated by `Tests/Docs/screenshots.mjs` from a **fresh** local demo (no Italian content yet) whose package talks to the stand-in. The stand-in returns real Italian for the demo texts the flow touches (`Tests/Docs/sample-it.json`), so the guides never show placeholder text. (`sample-de.json` holds the German for the demo movie.)
+**Real translations:** in CI (`.github/workflows/e2e.yml`) the screenshot step uses the real Supertext API with the secret `SUPERTEXT_API_KEY`, so the images show real Supertext output. The stand-in described here translates only without a key (forks, local runs); it always takes the version reports (`SUPERTEXT_REPORT_URL`), so nothing reaches the live Commando Center. Real translations can differ a little between runs, so the weekly run commits new images now and then.
+
+`docs/images/` is generated by `Tests/Docs/screenshots.mjs` from a **fresh** local demo (no Italian content yet) whose package talks to the real Supertext API (CI, `SUPERTEXT_API_KEY`) or, without a key, to the stand-in. The stand-in returns real Italian for the demo texts the flow touches (`Tests/Docs/sample-it.json`), so the guides never show placeholder text. (`sample-de.json` holds the German for the demo movie.)
 
 ```bash
 cd Tests/Docs && npm install

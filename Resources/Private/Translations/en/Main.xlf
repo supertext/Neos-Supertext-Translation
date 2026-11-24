@@ -176,6 +176,24 @@
 			<trans-unit id="mapping.reviewFromSettings" xml:space="preserve">
 				<source>Set in Settings.yaml (Supertext.NeosTranslation.languages.{0}.review)</source>
 			</trans-unit>
+			<trans-unit id="config.title" xml:space="preserve">
+				<source>Supertext support</source>
+			</trans-unit>
+			<trans-unit id="config.hint" xml:space="preserve">
+				<source>Send configuration to Supertext sends Supertext the Neos packages installed here (name, version; Neos's own are left out) and the Supertext language of each value of the language dimension, so Supertext support can help better. Nothing else is sent.</source>
+			</trans-unit>
+			<trans-unit id="config.button" xml:space="preserve">
+				<source>Send configuration to Supertext</source>
+			</trans-unit>
+			<trans-unit id="config.sent" xml:space="preserve">
+				<source>Sent: {0} packages, {1} languages.</source>
+			</trans-unit>
+			<trans-unit id="config.failed" xml:space="preserve">
+				<source>The configuration couldn't be sent. Try again later.</source>
+			</trans-unit>
+			<trans-unit id="config.off" xml:space="preserve">
+				<source>Version information is off (versionReports or SUPERTEXT_VERSION_REPORTS): nothing was sent.</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

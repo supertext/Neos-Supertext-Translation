@@ -7,6 +7,8 @@ namespace Supertext\NeosTranslation\Reporting;
 use Composer\InstalledVersions;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Http\Helper\RequestInformationHelper;
+use Neos\Flow\Package\FlowPackageInterface;
+use Neos\Flow\Package\PackageManager;
 use Neos\Neos\Domain\Repository\SiteRepository;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
@@ -17,6 +19,7 @@ use Supertext\NeosTranslation\PluginHealth\InstallationReporter;
 use Supertext\NeosTranslation\PluginHealth\KeyCheck;
 use Supertext\NeosTranslation\PluginHealth\PingResponse;
 use Supertext\NeosTranslation\PluginHealth\ReporterResult;
+use Supertext\NeosTranslation\Service\LanguageResolver;
 
 /**
  * Flow glue for Reporting: settings, the site URL Neos knows, the Neos and package
@@ -37,6 +40,12 @@ class ReportingService
 
     #[Flow\Inject]
     protected LoggerInterface $logger;
+
+    #[Flow\Inject]
+    protected PackageManager $packageManager;
+
+    #[Flow\Inject]
+    protected LanguageResolver $languageResolver;
 
     private ?Reporting $reporting = null;
 
@@ -91,6 +100,50 @@ class ReportingService
         } catch (\Throwable $e) {
             $this->logger->debug('Supertext: version report skipped: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * "Send configuration to Supertext" (Administration → Supertext): the installed Neos packages
+     * that aren't Neos's own (Composer type neos-*, vendor other than neos/) and every value of the
+     * language dimension with its Supertext code, in one report.
+     *
+     * @param list<string> $dimensionValues
+     *
+     * @return array{sent: bool, extensions: int, languages: int}|null null with reports off
+     */
+    public function sendConfiguration(array $dimensionValues): ?array
+    {
+        if (!$this->isEnabled()) {
+            return null;
+        }
+        $extensions = $this->installedPackages();
+        $languages = [];
+        foreach ($dimensionValues as $value) {
+            $languages[] = ['code' => $value, 'supertext' => $this->languageResolver->targetCodeOrNull($value)];
+        }
+        $result = $this->reporting()->sendConfiguration($this->siteUrl(), $extensions, $languages);
+        return ['sent' => (bool)$result?->sent, 'extensions' => count($extensions), 'languages' => count($languages)];
+    }
+
+    /** @return list<array{name: string, version: ?string, active: bool, type: string}> */
+    public function installedPackages(): array
+    {
+        $out = [];
+        try {
+            foreach ($this->packageManager->getAvailablePackages() as $package) {
+                $name = $package instanceof FlowPackageInterface ? (string)$package->getComposerName() : '';
+                $type = $package instanceof FlowPackageInterface ? (string)($package->getComposerManifest('type') ?? '') : '';
+                if ($name === '' || !str_starts_with($type, 'neos-') || str_starts_with($name, 'neos/')) {
+                    continue;
+                }
+                $version = (string)$package->getInstalledVersion();
+                $out[] = ['name' => $name, 'version' => $version !== '' ? ltrim($version, 'v') : null, 'active' => true, 'type' => $type];
+            }
+        } catch (\Throwable $e) {
+            $this->logger->debug('Supertext: package list skipped: ' . $e->getMessage());
+        }
+        usort($out, static fn (array $a, array $b): int => strcmp($a['name'], $b['name']));
+        return $out;
     }
 
     /**

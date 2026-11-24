@@ -104,6 +104,11 @@
 				<p>{neos:backend.translate(id: 'mapping.noLanguages', arguments: {0: dimension}, source: 'Main', package: 'Supertext.NeosTranslation')}</p>
 			</f:else>
 		</f:if>
+		<h2>{neos:backend.translate(id: 'config.title', source: 'Main', package: 'Supertext.NeosTranslation')}</h2>
+		<p>{neos:backend.translate(id: 'config.hint', source: 'Main', package: 'Supertext.NeosTranslation')}</p>
+		<f:form action="sendConfiguration" method="post" id="supertext-send-configuration">
+			<f:form.submit value="{neos:backend.translate(id: 'config.button', source: 'Main', package: 'Supertext.NeosTranslation')}" class="neos-button" />
+		</f:form>
 		<p class="supertext-version">
 			<f:if condition="{versionUrl}">
 				<f:then><a href="{versionUrl}" target="_blank" rel="noopener">{neos:backend.translate(id: 'mapping.version', arguments: {0: version}, source: 'Main', package: 'Supertext.NeosTranslation')}</a></f:then>

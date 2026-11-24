@@ -13,6 +13,7 @@ use Neos\Flow\I18n\Translator;
 use Neos\Neos\Controller\Module\AbstractModuleController;
 use Supertext\NeosTranslation\Configuration\PackageVersion;
 use Supertext\NeosTranslation\Configuration\Settings;
+use Supertext\NeosTranslation\Reporting\ReportingService;
 use Supertext\NeosTranslation\Service\LanguageMapping;
 use Supertext\NeosTranslation\Service\LanguageMappingStore;
 
@@ -42,6 +43,9 @@ class LanguageMappingController extends AbstractModuleController
 
     #[Flow\Inject]
     protected Translator $translator;
+
+    #[Flow\Inject]
+    protected ReportingService $reportingService;
 
     public function indexAction(): void
     {
@@ -77,6 +81,24 @@ class LanguageMappingController extends AbstractModuleController
         }
         $this->mappingStore->save($result['mapping']);
         $this->addFlashMessage($this->translate('mapping.saved'));
+        $this->redirect('index');
+    }
+
+    /**
+     * "Send configuration to Supertext": the installed Neos packages and the language mapping in one
+     * report (ReportingService::sendConfiguration()). Nothing while version reports are off.
+     */
+    public function sendConfigurationAction(): void
+    {
+        $values = array_map(static fn (array $language): string => $language['value'], $this->dimensionValues());
+        $result = $this->reportingService->sendConfiguration($values);
+        if ($result === null) {
+            $this->addFlashMessage($this->translate('config.off'), '', Message::SEVERITY_WARNING);
+        } elseif ($result['sent']) {
+            $this->addFlashMessage($this->translate('config.sent', [$result['extensions'], $result['languages']]));
+        } else {
+            $this->addFlashMessage($this->translate('config.failed'), '', Message::SEVERITY_ERROR);
+        }
         $this->redirect('index');
     }
 

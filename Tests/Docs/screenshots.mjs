@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 /**
- * Regenerates docs/images from a freshly started local Neos demo whose package talks
- * to stand-in.mjs (SUPERTEXT_API_ENDPOINT=http://127.0.0.1:8765/v1/), so the Italian
- * texts are real translations from sample-it.json. See docs/DEVELOPER.md -> Docs screenshots.
+ * Regenerates docs/images from a freshly started local Neos demo whose package talks to the
+ * real Supertext API (CI: SUPERTEXT_API_KEY) or, without a key, to stand-in.mjs
+ * (SUPERTEXT_API_ENDPOINT=http://127.0.0.1:8765/v1/), whose Italian texts are real translations
+ * from sample-it.json. See docs/DEVELOPER.md -> Docs screenshots.
  *
  *   BASE_URL (default http://127.0.0.1:8097)
  *   DEMO_EDITOR_EMAIL / DEMO_EDITOR_PASSWORD  editor account (translates and publishes)
@@ -127,7 +128,7 @@ await page.waitForTimeout(800);
 await shot(page, 'create-and-copy', pad(await page.getByText('Start with an empty or pre-filled document?').locator('xpath=ancestor::*[.//button[normalize-space()="Create and copy"]][1]').boundingBox(), 10));
 
 await page.getByRole('button', { name: 'Create and copy' }).click();
-await page.frameLocator('iframe[name=neos-content-main]').getByRole('heading', { name: 'Testo e immagini' }).first().waitFor({ timeout: 120000 });
+await page.frameLocator('iframe[name=neos-content-main]').getByRole('heading', { name: /immagini/i }).first().waitFor({ timeout: 300000 }); // real translation: wording may vary
 await page.waitForTimeout(2500);
 await shot(page, 'translated-page');
 
@@ -159,8 +160,8 @@ await page.waitForTimeout(1500);
 // Public website in Italian
 const site = await page.context().newPage();
 await site.goto(`${B}/it`);
-await site.getByRole('link', { name: 'Funzionalità' }).first().waitFor({ timeout: 30000 });
-const href = await site.locator('a', { hasText: 'Testo e immagini' }).first().getAttribute('href').catch(() => null);
+await site.getByRole('link', { name: /Funzionalit|Caratteristich/i }).first().waitFor({ timeout: 30000 });
+const href = await site.locator('a', { hasText: /immagini/i }).first().getAttribute('href').catch(() => null);
 await site.goto(href ? new URL(href, B).toString() : `${B}/it`);
 await site.waitForTimeout(1500);
 await shot(site, 'website-italian', { x: 0, y: 0, width: 1400, height: 760 });

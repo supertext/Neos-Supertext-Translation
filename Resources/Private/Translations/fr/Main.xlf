@@ -234,6 +234,30 @@
 				<source>Set in Settings.yaml (Supertext.NeosTranslation.languages.{0}.review)</source>
 				<target state="final">Défini dans Settings.yaml (Supertext.NeosTranslation.languages.{0}.review)</target>
 			</trans-unit>
+			<trans-unit id="config.title" xml:space="preserve">
+				<source>Supertext support</source>
+				<target state="final">Support Supertext</target>
+			</trans-unit>
+			<trans-unit id="config.hint" xml:space="preserve">
+				<source>Send configuration to Supertext sends Supertext the Neos packages installed here (name, version; Neos's own are left out) and the Supertext language of each value of the language dimension, so Supertext support can help better. Nothing else is sent.</source>
+				<target state="final">Envoyer la configuration à Supertext envoie à Supertext les paquets Neos installés ici (nom, version ; sans ceux de Neos) et la langue Supertext de chaque valeur de la dimension de langue, afin que le support Supertext puisse mieux vous aider. Rien d’autre n’est envoyé.</target>
+			</trans-unit>
+			<trans-unit id="config.button" xml:space="preserve">
+				<source>Send configuration to Supertext</source>
+				<target state="final">Envoyer la configuration à Supertext</target>
+			</trans-unit>
+			<trans-unit id="config.sent" xml:space="preserve">
+				<source>Sent: {0} packages, {1} languages.</source>
+				<target state="final">Envoyé : {0} paquets, {1} langues.</target>
+			</trans-unit>
+			<trans-unit id="config.failed" xml:space="preserve">
+				<source>The configuration couldn't be sent. Try again later.</source>
+				<target state="final">La configuration n’a pas pu être envoyée. Veuillez réessayer plus tard.</target>
+			</trans-unit>
+			<trans-unit id="config.off" xml:space="preserve">
+				<source>Version information is off (versionReports or SUPERTEXT_VERSION_REPORTS): nothing was sent.</source>
+				<target state="final">Les informations de version sont désactivées (versionReports ou SUPERTEXT_VERSION_REPORTS) : rien n’a été envoyé.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

@@ -252,8 +252,27 @@ $storage->values['reporter'] = json_encode([
 ], JSON_UNESCAPED_SLASHES);
 $make($storage, $transport)->run(Reporting::ACTION_ON_REQUEST, KEY, SITE);
 $check('SDK 0.2 state: nothing due', $transport->take(), []);
-$check('SDK 0.2 state: same format', array_keys(json_decode($storage->values['reporter'], true)), ['reportedVersions', 'reportedKeyStatus', 'lastFailureAt', 'keyCheck']);
+// Plugin Health 0.2+ adds keyChecks and reportedKeyStatuses (null with one key).
+$check('SDK 0.2 state: same format', array_keys(json_decode($storage->values['reporter'], true)), ['reportedVersions', 'reportedKeyStatus', 'lastFailureAt', 'keyCheck', 'keyChecks', 'reportedKeyStatuses']);
 $check('SDK 0.2 state: key check kept', $make($storage, $transport)->lastCheck()?->checkedAt, '2026-10-13T08:00:00Z');
+
+// 11b. Send configuration to Supertext: an `extensions` report now, also within the hour after a failed report; nothing when off.
+$storage = new MemoryStorage();
+$transport = new FakeTransport();
+$transport->reportStatus = 503;
+$make($storage, $transport)->run(Reporting::ACTION_ON_REQUEST, KEY, SITE);
+$transport->take();
+$transport->reportStatus = 202;
+$packages = [['name' => 'flowpack/neos-frontendlogin', 'version' => '6.0.0', 'active' => true, 'type' => 'neos-plugin']];
+$languages = [['code' => 'en_US', 'supertext' => 'en-US'], ['code' => 'de', 'supertext' => 'de-DE'], ['code' => 'gsw', 'supertext' => null]];
+$result = $make($storage, $transport)->sendConfiguration(SITE, $packages, $languages);
+$report = $transport->lastReport();
+$check('send configuration: event', [$result?->event, $result?->sent], ['extensions', true]);
+$check('send configuration: packages', $report['extensions'] ?? null, $packages);
+$check('send configuration: languages', $report['languages'] ?? null, $languages);
+$transport->take();
+$check('send configuration off', (bool)$make($storage, $transport, false)->sendConfiguration(SITE, $packages, $languages)?->sent, false);
+$check('send configuration off: nothing sent', $transport->take(), []);
 
 // 12. Messages
 $invalid = KeyCheckMessages::for(new KeyCheck(KeyCheck::INVALID, '2026-10-14T08:00:00Z', 401));

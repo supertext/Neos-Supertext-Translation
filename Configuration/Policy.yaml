@@ -17,7 +17,7 @@ privilegeTargets:
       matcher: 'method(Supertext\NeosTranslation\Controller\TranslationFilesController->(index|export|import)Action())'
     'Supertext.NeosTranslation:Module.LanguageMapping.Actions':
       label: 'Supertext: actions of the language mapping module'
-      matcher: 'method(Supertext\NeosTranslation\Controller\LanguageMappingController->(index|save)Action())'
+      matcher: 'method(Supertext\NeosTranslation\Controller\LanguageMappingController->(index|save|sendConfiguration)Action())'
 
 roles:
   'Neos.Neos:Editor':
