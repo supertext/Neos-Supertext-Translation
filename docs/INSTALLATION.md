@@ -12,7 +12,7 @@ For administrators setting up the package on a Neos site.
 | PHP | 8.2 or newer, with `ext-dom` |
 | Content dimensions | A language dimension (named `language` by default) |
 | Supertext | An account ([create one or log in](https://www.supertext.com/person/en/account/signin)) with an API key ([supertext.com → Integrations → API](https://www.supertext.com/en/integrations/api), requires the Admin role) |
-| Network | The web server must reach `https://api.supertext.com` over HTTPS (and, for [Translation review](#translation-review), Supertext's review service `https://localizationreview-production.up.railway.app`; while *Send version information to Supertext* is on, `https://commandocenter-production.up.railway.app`) |
+| Network | The web server must reach `https://api.supertext.com` over HTTPS (and, for [Translation review](#translation-review), Supertext's review service `https://localizationreview-production.up.railway.app`; while *Send version information to Supertext* is on, `https://pluginhealth.supertext.com`) |
 
 ## 1. Add the package
 
