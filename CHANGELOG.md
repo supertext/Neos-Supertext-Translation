@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.1.0 — 2026-11-26
+
 - Added: Indonesian, Romanian, Thai and Vietnamese (`id`, `ro`, `th`, `vi`) can be chosen as Supertext languages, all with formal and informal address (Supertext SDK 0.7.0).
 - Changed: version reports go to `https://pluginhealth.supertext.com` (Supertext Plugin Health 0.4.0); the installation guide's network requirements name that address.
 - Added: **Send configuration to Supertext** in *Administration → Supertext*: sends Supertext the installed Neos packages (name, version) and the Supertext language of each language, so Supertext support can help better. Nothing is sent while version information is off. All four interface languages. Supertext Plugin Health 0.4.0.
