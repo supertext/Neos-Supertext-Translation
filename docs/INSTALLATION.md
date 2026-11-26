@@ -124,7 +124,7 @@ As offered by the Supertext API in October 2026 (the bundled SDK's `Languages::T
 | Chinese | `zh-Hans` (simplified), `zh-Hant` (traditional) |
 | Serbian | `sr-Latn`, `sr-Cyrl` |
 | Swiss German | `gsw-u-sd-chzh` (Zurich), `gsw-u-sd-chbe` (Bern) |
-| All others, without region | `bg`, `cs`, `da`, `el`, `es`, `fi`, `hr`, `hu`, `ja`, `ko`, `nb`, `nl`, `pl`, `rm`, `ru`, `sk`, `sl`, `sq`, `sv`, `tr` |
+| All others, without region | `bg`, `cs`, `da`, `el`, `es`, `fi`, `hr`, `hu`, `id`, `ja`, `ko`, `nb`, `nl`, `pl`, `rm`, `ro`, `ru`, `sk`, `sl`, `sq`, `sv`, `th`, `tr`, `vi` |
 
 Sources are bare languages (`en`, `de`, `fr`, …). Regional codes for the other languages (`es-ES`, `sl-SI`, `zh-CN`) are **not** accepted. A code Supertext adds later can be set in Settings.yaml right away (codes there are sent as they are); the module's combo boxes offer the codes of the bundled SDK.
 
